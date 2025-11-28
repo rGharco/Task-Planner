@@ -1,0 +1,11 @@
+{
+  "name": "task-planner-server",
+  "version": "1.0.0",
+  "description": "Server for Task Planner app for Web Tech Course.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Visan Alexandru-Teodor, Radulescu Alexandru-Gabriel, Bodaci Marian",
+  "license": "ISC"
+}
