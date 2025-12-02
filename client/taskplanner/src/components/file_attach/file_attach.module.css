@@ -1,0 +1,29 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.container label {
+    display: inline-block;
+    background-color: white;
+    color:black;
+    padding: 8px 18px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    font-family: "Noto Sans", sans-serif;
+    font-size:18px;
+    font-weight: 600;
+}
+
+.container label:hover {
+    background-color: var(--highlight-green);
+}
+
+.container label:active {
+    background-color: var(--select-green);
+}
+
+.container input {
+    display: none;
+}

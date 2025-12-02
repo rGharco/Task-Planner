@@ -1,0 +1,13 @@
+.backgroundStyle {
+    margin-left:100px;
+    margin-right:100px;
+    margin-bottom:100px;
+    margin-top:20px;
+    background-color: var(--transparent-background);
+    border-radius:20px;
+    box-sizing: border-box;
+    padding:20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow:1;
+}

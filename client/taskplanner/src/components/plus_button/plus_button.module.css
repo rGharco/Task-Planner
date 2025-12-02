@@ -1,0 +1,17 @@
+.buttonStyle {
+    cursor: pointer;
+    color: white;
+    font-size: 40px;
+    transition: color 0.3s ease;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.buttonStyle:hover {
+    color:var(--highlight-green);
+}
+
+.buttonStyle:active {
+    color: var(--select-green);
+}

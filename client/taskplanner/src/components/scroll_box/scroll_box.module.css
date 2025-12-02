@@ -1,0 +1,8 @@
+.scrollBox {
+    padding: 20px;
+    background: transparent;
+    overflow-y: scroll;
+    scrollbar-color: var(--highlight-green) var(--select-green);
+    scrollbar-width: thin;
+    border: 3px solid var(--select-green);
+}

@@ -1,0 +1,19 @@
+.button_style {
+    background-color: white;
+    color:black;
+    font-family: "Noto Sans", sans-serif;
+    font-size:20px;
+    font-weight:600;
+    transition: color 0.3s ease;
+    padding:10px;
+    width:40%;
+    text-align: center;
+}
+
+.button_style:hover {
+    background-color: var(--highlight-green);
+}
+
+.button_style:active {
+    background-color: var(--select-green);
+}
