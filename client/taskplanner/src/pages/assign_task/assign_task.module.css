@@ -4,7 +4,7 @@
     background-image: linear-gradient(rgba(33, 40, 50) 15%, rgba(4, 162, 127) 100%);
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 100%;
 }
 
 .left_container {

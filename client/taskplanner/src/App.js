@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import AssignTaskPage from './pages/assign_task/assign_task';
+import ProfilePage from './pages/profile/profile';
 
 function App() {
   return (
@@ -20,7 +21,9 @@ function App() {
     //     </a>
     //   </header>
     // </div>
-    <AssignTaskPage/>
+
+    // <AssignTaskPage/>
+    <ProfilePage/>
   );
 }
 

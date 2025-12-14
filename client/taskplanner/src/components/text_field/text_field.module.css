@@ -22,6 +22,7 @@
     color: black;
     box-sizing: border-box;
     border:transparent;
+    border-radius: 10px;
 }
 
 .input_style:focus {
