@@ -1,0 +1,44 @@
+.entryStyle {
+    font-family: "Noto Sans", sans-serif;
+    color:white;
+    background-color: var(--lighter-gray);
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    align-items: center;
+    gap:10px;
+}
+
+.horizontalContainer {
+    display: flex;
+    width: 100%;
+}
+
+.horizontalContainer > *:last-child {
+    margin-left: auto;
+}
+
+.verticalContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.lineContainer {
+    display: flex;
+    gap: 5px;
+}
+
+.taskTitle {
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.taskCategory {
+    font-size: 17px;
+}
+
+.taskDeadline {
+    font-size: 19px;
+    font-weight: 700;
+}

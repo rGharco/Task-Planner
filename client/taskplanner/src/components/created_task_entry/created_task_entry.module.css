@@ -1,0 +1,32 @@
+.entryStyle {
+    font-family: "Noto Sans", sans-serif;
+    color:white;
+    background-color: var(--lighter-gray);
+    display: flex;
+    padding: 5px;
+    align-items: center;
+    gap:20px;
+}
+
+.entryStyle > *:nth-child(2) {
+    margin-left: auto;
+}
+
+.verticalContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.buttonContainer {
+    display: flex;
+    gap: 10px;
+}
+
+.taskTitle {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.taskAsignee {
+    font-size: 17px;
+}
