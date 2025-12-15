@@ -4,8 +4,14 @@
   "description": "Server for Task Planner app for Web Tech Course.",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Visan Alexandru-Teodor, Radulescu Alexandru-Gabriel, Bodaci Marian",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.2.1",
+    "sequelize": "^6.37.7",
+    "sqlite3": "^5.1.7"
+  }
 }
