@@ -22,8 +22,8 @@ function App() {
     //   </header>
     // </div>
 
-    // <AssignTaskPage/>
-    <ProfilePage/>
+    <AssignTaskPage/>
+    // <ProfilePage/>
   );
 }
 
