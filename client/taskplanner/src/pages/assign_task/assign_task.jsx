@@ -8,13 +8,11 @@ import LargeTextField from '../../components/large_text_field/large_text_field';
 import PageTitle from '../../components/page_title/page_title';
 import PlusButton from '../../components/plus_button/plus_button';
 import ScrollBox from '../../components/scroll_box/scroll_box';
-import Taskbar from '../../components/taskbar/taskbar';
 import TextField from '../../components/text_field/text_field';
 
 export default function AssignTaskPage() {
     return (
-        <div className={styles.background}>
-            <Taskbar/>
+        <>
             <PageTitle text="Assign Task"/>
             <InterfaceBackground>
                 <div className={styles.page_container}>
@@ -43,6 +41,6 @@ export default function AssignTaskPage() {
                     </div>
                 </div>
             </InterfaceBackground>
-        </div>
+        </>
     )
 }
