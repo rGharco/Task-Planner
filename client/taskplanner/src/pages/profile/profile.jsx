@@ -1,7 +1,6 @@
 import InterfaceBackground from '../../components/interface_background/interface_background';
 import styles from './profile.module.css';
 import PageTitle from '../../components/page_title/page_title';
-import Taskbar from '../../components/taskbar/taskbar';
 import Label from '../../components/label/label';
 import InfoLine from '../../components/info_line/info_line';
 import ScrollBox from '../../components/scroll_box/scroll_box';
@@ -10,8 +9,7 @@ import AssignedTaskEntry from '../../components/assigned_task_entry/assigned_tas
 
 export default function ProfilePage() {
     return (
-        <div className={styles.background}>
-            <Taskbar/>
+        <>
             <PageTitle text="User Profile"/>
             <InterfaceBackground>
                 <div className={styles.horizontal_container}>
@@ -48,6 +46,6 @@ export default function ProfilePage() {
                     </div>
                 </div>
             </InterfaceBackground>
-        </div>
+        </>
     )
 }
