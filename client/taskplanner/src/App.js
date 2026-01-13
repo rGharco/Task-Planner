@@ -1,5 +1,5 @@
 import './App.css';
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import AssignTaskPage from './pages/assign_task/assign_task';
 import ProfilePage from './pages/profile/profile';
 import LoginPage from './pages/login/login';
@@ -66,9 +66,7 @@ function AppContent() {
 
 function App() {
   return (
-    <BrowserRouter>
-      <AppContent/>
-    </BrowserRouter>
+    <AppContent/>
   );
 }
 
