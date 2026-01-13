@@ -16,47 +16,67 @@ export default function AssignTaskPage() {
     const location = useLocation();
     const navigate = useNavigate();
     
-    // Check if we're editing an existing task
     const editTask = location.state?.editTask;
     const isEditMode = !!editTask;
 
     const [taskTitle, setTaskTitle] = useState("");
     const [executor, setExecutor] = useState("");
+    const [asigneeId, setAsigneeId] = useState("");
     const [deadline, setDeadline] = useState("");
     const [description, setDescription] = useState("");
+    const [users, setUsers] = useState([]);
+
+    // Fetch users for dropdown
+    useEffect(() => {
+        async function fetchUsers() {
+            try {
+                const response = await fetch("http://localhost:3001/api/users");
+                if (response.ok) {
+                    const data = await response.json();
+                    setUsers(data);
+                }
+            } catch (error) {
+                console.error("Error fetching users:", error);
+            }
+        }
+        fetchUsers();
+    }, []);
 
     // Pre-fill form if editing
     useEffect(() => {
         if (editTask) {
             setTaskTitle(editTask.title || "");
-            setExecutor(editTask.assignee || "");
+            setExecutor(editTask.executor || "");
+            setAsigneeId(editTask.asigneeId || "");
             setDeadline(editTask.deadline || "");
             setDescription(editTask.description || "");
         }
     }, [editTask]);
 
     async function handleCreateTask() {
+        const user = JSON.parse(localStorage.getItem('user'));
+        
         const taskData = {
             title: taskTitle,
             executor: executor,
+            asigneeId: asigneeId || null,
             deadline: deadline,
             description: description,
             status: isEditMode ? (editTask.status || "OPEN") : "OPEN",
-            category: isEditMode ? (editTask.category || null) : null
+            category: isEditMode ? (editTask.category || null) : null,
+            creatorId: user?.id
         };
 
         try {
             let response;
             
             if (isEditMode) {
-                // Update existing task
                 response = await fetch(`http://localhost:3001/api/tasks/modify/${editTask.id}`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(taskData),
                 });
             } else {
-                // Create new task
                 response = await fetch("http://localhost:3001/api/tasks", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -71,19 +91,26 @@ export default function AssignTaskPage() {
             const data = await response.json();
             console.log(isEditMode ? "Task updated:" : "Task created:", data);
             
-            // Clear form and navigate back to profile
             setTaskTitle("");
             setExecutor("");
+            setAsigneeId("");
             setDeadline("");
             setDescription("");
             
-            if (isEditMode) {
-                navigate('/profile');
-            }
+            navigate('/profile');
         } catch (err) {
             console.error("Error saving task:", err);
         }
     }
+
+    const handleExecutorChange = (e) => {
+        const selectedId = e.target.value;
+        setAsigneeId(selectedId);
+        
+        // Also set executor name for display purposes
+        const selectedUser = users.find(u => u.id.toString() === selectedId);
+        setExecutor(selectedUser ? selectedUser.name : "");
+    };
 
     return (
         <>
@@ -93,7 +120,21 @@ export default function AssignTaskPage() {
                     <div className={styles.left_container}>
                         <TextField text="Task Title" value={taskTitle} onChange={(e) => setTaskTitle(e.target.value)}/>
                         <div className={styles.input_button_container}>
-                            <TextField text="Executor" value={executor} onChange={(e) => setExecutor(e.target.value)}/>
+                            <div className={styles.select_container}>
+                                <label className={styles.select_label}>Executor</label>
+                                <select 
+                                    className={styles.select_field}
+                                    value={asigneeId}
+                                    onChange={handleExecutorChange}
+                                >
+                                    <option value="">Select executor...</option>
+                                    {users.map(user => (
+                                        <option key={user.id} value={user.id}>
+                                            {user.name} ({user.email})
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
                             <PlusButton onClick={() => console.log("Add executor")}/>
                         </div>
                         <DateField text="Deadline" value={deadline} onChange={(e) => setDeadline(e.target.value)}/>

@@ -29,9 +29,13 @@ module.exports = (sequelize) => {
             type: DataTypes.STRING,
             allowNull: true
         },
+        creatorId: {
+            type: DataTypes.INTEGER,
+            allowNull: true
+        },
         asigneeId: {
             type: DataTypes.INTEGER,
-            allowNull: false
+            allowNull: true
         },
         deadline: {
             type: DataTypes.DATE,

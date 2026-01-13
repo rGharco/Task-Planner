@@ -245,4 +245,69 @@ router.delete('/delete/:id', async (req, res) => {
     }
 });
 
+/**
+ * GET /api/tasks/created/:userId
+ * Get all tasks created by a specific user
+ */
+router.get('/created/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const tasks = await Task.findAll({
+            where: { creatorId: userId }
+        });
+        return res.status(200).json(tasks);
+    } catch (error) {
+        console.error('Error fetching created tasks:', error);
+        return res.status(500).json({ error: 'Server error' });
+    }
+});
+
+/**
+ * GET /api/tasks/assigned/:userId
+ * Get all tasks assigned to a specific user
+ */
+router.get('/assigned/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const tasks = await Task.findAll({
+            where: { asigneeId: userId }
+        });
+        return res.status(200).json(tasks);
+    } catch (error) {
+        console.error('Error fetching assigned tasks:', error);
+        return res.status(500).json({ error: 'Server error' });
+    }
+});
+
+router.post('/', async (req, res) => {
+    try {
+        const { title, executor, asigneeId, deadline, description, category, creatorId } = req.body;
+        let task;
+
+        if (title.trim().length === 0) {
+            return res.status(400).json({
+                error: 'Missing required fields: title'
+            });
+        }
+
+        task = await Task.create({
+            title,
+            description: description || null,
+            status: asigneeId ? 'PENDING' : 'OPEN',
+            executor: executor || null,
+            asigneeId: asigneeId || null,
+            deadline: deadline || null,
+            category: category || null,
+            creatorId: creatorId || null,
+        });
+
+        res.status(201).json(task);
+    } catch (error) {
+        console.error('Error creating task:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
+
 module.exports = router;
