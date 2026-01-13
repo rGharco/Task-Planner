@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom';
 import InterfaceBackground from '../../components/interface_background/interface_background';
 import styles from './profile.module.css';
 import PageTitle from '../../components/page_title/page_title';
-import Taskbar from '../../components/taskbar/taskbar';
 import Label from '../../components/label/label';
 import InfoLine from '../../components/info_line/info_line';
 import CreatedTaskEntry from '../../components/created_task_entry/created_task_entry';
@@ -22,8 +21,7 @@ export default function ProfilePage() {
     };
 
     return (
-        <div className={styles.background}>
-            <Taskbar/>
+        <>
             <div className={styles.header_container}>
                 <PageTitle text="User Profile"/>
                 <button className={styles.logout_button} onClick={handleLogout}>
@@ -67,6 +65,6 @@ export default function ProfilePage() {
                     </div>
                 </div>
             </InterfaceBackground>
-        </div>
+        </>
     )
 }

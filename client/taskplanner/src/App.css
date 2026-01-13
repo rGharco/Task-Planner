@@ -37,6 +37,16 @@
   }
 }
 
+/* BACKGROUND */
+.background {
+    margin:0;
+    padding:0;
+    background-image: linear-gradient(rgba(33, 40, 50) 15%, rgba(4, 162, 127) 100%);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
 /* COLORS  */
 
 :root {
@@ -45,4 +55,5 @@
   --background-gray: rgba(33, 40, 50);
   --transparent-background: rgba(27, 36, 37, 0.8);
   --lighter-gray: rgb(39, 68, 68);
+  --border-radius: 20px;
 }
