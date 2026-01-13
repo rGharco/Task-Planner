@@ -1,0 +1,16 @@
+.text {
+    color: white;
+    font-family: "Noto Sans", sans-serif;
+    size:18px;
+}
+
+.link {
+    color: var(--highlight-green);
+    size:18px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.link:hover {
+    color: var(--select-green);
+}

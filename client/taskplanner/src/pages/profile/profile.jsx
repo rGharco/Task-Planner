@@ -32,7 +32,7 @@ export default function ProfilePage() {
                         </div>
                     </div>
                     <div className={styles.right_container}>
-                        <Label text="Asigned Tasks"/>
+                        <Label text="Assigned Tasks"/>
                         <ScrollBox width="600px" height="100%">
                             <div className={styles.small_gap_vertical_container}>
                                 <AssignedTaskEntry title="Task 1" category="Example" deadline="1 Jan 2025" 
