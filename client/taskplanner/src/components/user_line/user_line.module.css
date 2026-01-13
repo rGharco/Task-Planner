@@ -1,0 +1,16 @@
+.container {
+    background-color: var(--lighter-gray);
+    padding:10px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.font_style {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+    text-align: left;
+}

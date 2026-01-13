@@ -9,8 +9,6 @@
 }
 
 .modal_box {
-    width:35%;
-    height:50%;
     background-color: var(--background-gray);
     border-radius: 10px;
     display: flex;

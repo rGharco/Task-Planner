@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import SmallButton from '../small_button/small_button'
 import styles from './modal_popup.module.css'
 
-export default function ModalPopup({children, onClose, onApply}) {
+export default function ModalPopup({children, onClose, onApply, width, height}) {
     const modalRef = useRef();
 
     const closeModal = (e) => {
@@ -13,7 +13,7 @@ export default function ModalPopup({children, onClose, onApply}) {
 
     return (
         <div className={styles.modal_container} ref={modalRef} onClick={closeModal}>
-            <div className={styles.modal_box}>
+            <div className={styles.modal_box} style={{ width: width || "35%", height: height || "50%" }}>
                 <div className={styles.modal_content}>
                     {children}
                 </div>
