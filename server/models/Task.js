@@ -25,6 +25,14 @@ module.exports = (sequelize) => {
             allowNull: false,
             defaultValue: 'OPEN'
         },
+        executor: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        asigneeId: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
         deadline: {
             type: DataTypes.DATE,
             allowNull: true
