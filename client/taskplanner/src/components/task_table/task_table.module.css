@@ -1,0 +1,60 @@
+.tableContainer {
+    display: flex;
+    flex-direction: row;
+    
+    width: 100%;
+    margin-top: 20px;
+    background-color: var(--lighter-gray);
+    border-radius: 20px;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; 
+}
+
+.table thead th {
+    color: var(--highlight-green);
+    text-transform: uppercase;
+}
+
+.table th, .table td {
+    padding: 0.4em 2em;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis; 
+    white-space: nowrap;
+}
+
+.idCol {
+    width: 40px; /* ID-ul are maxim 3 cifre, deci are nevoie de spațiu minim */
+}
+
+.titleCol {
+    width: 150px; /* Procentual pentru ecrane diferite */
+}
+
+.descCol {
+    width: auto; /* Aceasta va prelua restul spațiului rămas disponibil */
+}
+
+.statusCol {
+    width: 70px; /* Statusul (Pending/Done) este de obicei scurt */
+}
+
+.deadlineCol {
+    width: 80px; /* Suficient pentru o dată formatată */
+}
+
+.categoryCol {
+    width: 100px;
+}
+
+.tableBody tr:nth-child(odd) {
+    background-color: var(--select-green);
+}
+
+.tableBody tr:nth-child(even) {
+    color: var(--highlight-green);
+}
