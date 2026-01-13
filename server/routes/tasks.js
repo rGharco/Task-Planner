@@ -6,29 +6,31 @@ const express = require('express');
 const router = express.Router();
 const { Task, User, TaskAssignment, Subtask } = require('../models');
 
+router.get('/', async (req, res) => {
+    try {
+        const tasks = await Task.findAll();
+
+        return res.status(200).json(tasks);
+    }
+    catch(err) {
+        return res.status(500).json({ error: 'Server error' });
+    }
+});
+
 /**
  * POST /api/tasks
  * Create a new task
- * Body: { title, description, deadline, category, createdById }
+ * Body: { title, description, deadline, category }
  */
 router.post('/', async (req, res) => {
     try {
-        const { title, description, deadline, category, createdById } = req.body;
+        const { title, description, deadline, category } = req.body;
 
         // Validate required fields
-        if (!title || !createdById) {
+        if (title.trim().length === 0) {
             return res.status(400).json({ 
-                error: 'Missing required fields: title, createdById' 
-            });
-        }
-
-        // Verify creator exists and is a manager or admin
-        const creator = await User.findByPk(createdById);
-        if (!creator) {
-            return res.status(404).json({ error: 'Creator user not found' });
-        }
-        if (creator.role === 'executor') {
-            return res.status(403).json({ error: 'Only managers and admins can create tasks' });
+                error: 'Missing required fields: title' 
+            }); 
         }
 
         const task = await Task.create({
@@ -37,7 +39,6 @@ router.post('/', async (req, res) => {
             status: 'OPEN',
             deadline: deadline || null,
             category: category || null,
-            createdById
         });
 
         res.status(201).json(task);
@@ -144,6 +145,67 @@ router.post('/:id/close', async (req, res) => {
         res.status(200).json(task);
     } catch (error) {
         console.error('Error closing task:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+router.put('/modify/:id', async (req, res) => {
+    try {
+        const taskId = req.params.id;
+
+        if (taskId < 0) {
+            return res.status(400).json({"message": "task id cannot be lower than 0"});
+        }
+
+        const toUpdate = await Task.findOne({
+            where: {id : taskId}
+        });
+
+        if (!toUpdate) {
+            return res.status(400).json({"message": "task does not exist"});
+        }
+
+        const JSONBody = req.body;
+
+        // Frontend will send the data already present so no fields will be left NULL
+        toUpdate.update({
+            title: JSONBody.title,
+            description: JSONBody.description,
+            status: JSONBody.status,
+            deadline: JSONBody.deadline,
+            category: JSONBody.category
+        });
+
+        return res.status(200).json({"message": "updated"});
+    }
+    catch(error) {
+        console.error(error);
+        return res.status(500).json({ error: `Sevrer error: ${error}` });
+    }
+});
+
+router.delete('/delete/:id', async (req, res) => {
+    try {
+        const taskId = req.params.id;
+
+        if (taskId < 0) {
+            return res.status(400).json({"message": "task id cannot be lower than 0"});
+        }
+
+        const toDelete = await Task.findOne({
+            where: {id : taskId}
+        });
+
+        if (!toDelete) {
+            return res.status(400).json({"message": "task does not exist"});
+        }
+
+        await toDelete.destroy();
+
+        return res.status(200).json({ "message": "deleted" });
+    }
+    catch(error) {
+        console.error(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
