@@ -8,7 +8,7 @@ const { User } = require('../models');
 
 /**
  * POST /api/users
- * Create a new user
+ * Create a new user (Register)
  * Body: { email, name, password, birthDate, role, managerId (optional) }
  */
 router.post('/', async (req, res) => {
@@ -17,8 +17,8 @@ router.post('/', async (req, res) => {
 
         // Validate required fields
         if (!email || !name || !password) {
-            return res.status(400).json({ 
-                error: 'Missing required fields: email, name, password' 
+            return res.status(400).json({
+                error: 'Missing required fields: email, name, password'
             });
         }
 
@@ -45,6 +45,49 @@ router.post('/', async (req, res) => {
             return res.status(409).json({ error: 'Email already exists' });
         }
         console.error('Error creating user:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+/**
+ * POST /api/users/login
+ * Login user
+ * Body: { email, password }
+ */
+router.post('/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        // Validate required fields
+        if (!email || !password) {
+            return res.status(400).json({
+                error: 'Missing required fields: email, password'
+            });
+        }
+
+        // Find user by email
+        const user = await User.findOne({ where: { email } });
+
+        if (!user) {
+            return res.status(401).json({ error: 'Invalid email or password' });
+        }
+
+        // Check password (simple comparison - in production, use bcrypt)
+        if (user.password !== password) {
+            return res.status(401).json({ error: 'Invalid email or password' });
+        }
+
+        // Return user data (excluding password)
+        res.status(200).json({
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            birthDate: user.birthDate,
+            role: user.role,
+            managerId: user.managerId
+        });
+    } catch (error) {
+        console.error('Error logging in:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });

@@ -3,6 +3,7 @@
  * Main entry point for the Express application
  */
 const express = require('express');
+const cors = require('cors');
 const { sequelize } = require('./models');
 
 // Import routes
@@ -11,9 +12,10 @@ const taskRoutes = require('./routes/tasks');
 const subtaskRoutes = require('./routes/subtasks');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 // Middleware
+app.use(cors());
 app.use(express.json());
 
 // Routes

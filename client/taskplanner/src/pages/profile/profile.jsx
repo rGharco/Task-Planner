@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import InterfaceBackground from '../../components/interface_background/interface_background';
 import styles from './profile.module.css';
 import PageTitle from '../../components/page_title/page_title';
@@ -9,19 +10,36 @@ import CreatedTaskEntry from '../../components/created_task_entry/created_task_e
 import AssignedTaskEntry from '../../components/assigned_task_entry/assigned_task_entry';
 
 export default function ProfilePage() {
+    const navigate = useNavigate();
+    
+    // Get logged in user data
+    const userData = JSON.parse(localStorage.getItem('user')) || {};
+    
+    const handleLogout = () => {
+        // Clear user data from localStorage
+        localStorage.removeItem('user');
+        // Redirect to login page
+        navigate('/login');
+    };
+
     return (
         <div className={styles.background}>
             <Taskbar/>
-            <PageTitle text="User Profile"/>
+            <div className={styles.header_container}>
+                <PageTitle text="User Profile"/>
+                <button className={styles.logout_button} onClick={handleLogout}>
+                    Logout
+                </button>
+            </div>
             <InterfaceBackground>
                 <div className={styles.horizontal_container}>
                     <div className={styles.left_container}>
                         <div className={styles.small_gap_vertical_container}>
                             <Label text="User Information"/>
-                            <InfoLine heading="User:" info="User's Name"/>
-                            <InfoLine heading="User ID:" info="User's ID"/>
-                            <InfoLine heading="Email:" info="User's Email"/>
-                            <InfoLine heading="Birth Date:" info="User's Birth Date"/>
+                            <InfoLine heading="User:" info={userData.name || "User's Name"}/>
+                            <InfoLine heading="User ID:" info={userData.id || "User's ID"}/>
+                            <InfoLine heading="Email:" info={userData.email || "User's Email"}/>
+                            <InfoLine heading="Birth Date:" info={userData.birthDate || "Not provided"}/>
                         </div>
                         <div className={styles.small_gap_vertical_container}>
                             <Label text="Created Tasks"/>
