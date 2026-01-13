@@ -46,22 +46,35 @@ router.get('/', async (req, res) => {
  */
 router.post('/', async (req, res) => {
     try {
-        const { title, description, deadline, category } = req.body;
+        const { title, executor, deadline, description, category } = req.body;
+        let task;
 
         // Validate required fields
         if (title.trim().length === 0) {
             return res.status(400).json({ 
                 error: 'Missing required fields: title' 
             }); 
-        }
+            }
 
-        const task = await Task.create({
-            title,
-            description: description || null,
-            status: 'OPEN',
-            deadline: deadline || null,
-            category: category || null,
-        });
+        if (!executor) {
+            task = await Task.create({
+                title,
+                description: description || null,
+                status: 'OPEN',
+                deadline: deadline || null,
+                category: category || null,
+            });
+        }
+        else {
+            task = await Task.create({
+                title,
+                description: description || null,
+                status: 'PENDING',
+                deadline: deadline || null,
+                category: category || null,
+            });
+        }
+        
 
         res.status(201).json(task);
     } catch (error) {
