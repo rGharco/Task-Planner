@@ -28,11 +28,11 @@
 }
 
 .idCol {
-    width: 60px; /* ID-ul are maxim 3 cifre, deci are nevoie de spațiu minim */
+    width: 40px; /* ID-ul are maxim 3 cifre, deci are nevoie de spațiu minim */
 }
 
 .titleCol {
-    width: 20%; /* Procentual pentru ecrane diferite */
+    width: 150px; /* Procentual pentru ecrane diferite */
 }
 
 .descCol {
@@ -40,11 +40,11 @@
 }
 
 .statusCol {
-    width: 80px; /* Statusul (Pending/Done) este de obicei scurt */
+    width: 70px; /* Statusul (Pending/Done) este de obicei scurt */
 }
 
 .deadlineCol {
-    width: 150px; /* Suficient pentru o dată formatată */
+    width: 80px; /* Suficient pentru o dată formatată */
 }
 
 .categoryCol {

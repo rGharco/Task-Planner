@@ -16,8 +16,6 @@ const { Op } = require('sequelize');
 router.get('/', async (req, res) => {
     try {
         const { startDate, endDate } = req.query;
-        console.log(startDate);
-        console.log(endDate);
         let tasks;
 
         if (startDate && endDate) {
