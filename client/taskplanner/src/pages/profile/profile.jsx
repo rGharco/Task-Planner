@@ -9,15 +9,28 @@ import AssignedTaskEntry from '../../components/assigned_task_entry/assigned_tas
 
 export default function ProfilePage() {
     const navigate = useNavigate();
-
+    
     // Get logged in user data
     const userData = JSON.parse(localStorage.getItem('user')) || {};
-
+    
     const handleLogout = () => {
-        // Clear user data from localStorage
         localStorage.removeItem('user');
-        // Redirect to login page
         navigate('/login');
+    };
+
+    // Example tasks - later these will come from API
+    const createdTasks = [
+        { id: 1, title: "Task 1", assignee: "John Doe", deadline: "2025-01-15", description: "First task description" },
+        { id: 2, title: "Task 2", assignee: "Jane Doe", deadline: "2025-01-20", description: "Second task description" }
+    ];
+
+    const handleModifyTask = (task) => {
+        navigate('/assign-task', { state: { editTask: task } });
+    };
+
+    const handleDeleteTask = (taskId) => {
+        console.log("Delete task:", taskId);
+        // TODO: Call API to delete task
     };
 
     return (
@@ -40,16 +53,21 @@ export default function ProfilePage() {
                                 <InfoLine heading="Birth Date:" info={userData.birthDate || "Not provided"}/>
                             </div>
                         </div>
-                        
                         <Label text="Created Tasks"/>
                         <div className={styles.section_box_scroll}>
                             <div className={styles.small_gap_vertical_container}>
-                                <CreatedTaskEntry title="Task 1" asignee="John Doe"/>
-                                <CreatedTaskEntry title="Task 2" asignee="Jane Doe"/>
+                                {createdTasks.map(task => (
+                                    <CreatedTaskEntry 
+                                        key={task.id}
+                                        title={task.title} 
+                                        asignee={task.assignee}
+                                        onModify={() => handleModifyTask(task)}
+                                        onDelete={() => handleDeleteTask(task.id)}
+                                    />
+                                ))}
                             </div>
                         </div>
                     </div>
-                    
                     <div className={styles.right_container}>
                         <Label text="Assigned Tasks"/>
                         <div className={styles.section_box_scroll}>
