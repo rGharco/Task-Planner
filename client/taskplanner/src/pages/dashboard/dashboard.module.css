@@ -1,0 +1,5 @@
+.taskTable {
+    display: flex;
+    flex-direction: row;
+}
+

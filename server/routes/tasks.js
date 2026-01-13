@@ -5,12 +5,36 @@
 const express = require('express');
 const router = express.Router();
 const { Task, User, TaskAssignment, Subtask } = require('../models');
+const e = require('express');
+const { Op } = require('sequelize');
 
+/**
+ * GET /api/tasks
+ * Request all the tasks or the task based on a date (used on the dashboard page to retrieve weekly tasks)
+ * Query parameters: startDate, endDate (tasks?startDate=<X>&endDate=<X>)
+ */
 router.get('/', async (req, res) => {
     try {
-        const tasks = await Task.findAll();
+        const { startDate, endDate } = req.query;
+        console.log(startDate);
+        console.log(endDate);
+        let tasks;
 
-        return res.status(200).json(tasks);
+        if (startDate && endDate) {
+            // Filtrare pe interval de date
+            tasks = await Task.findAll({
+                where: {
+                    deadline: {
+                        [Op.between]: [new Date(startDate), new Date(endDate)]
+                    }
+                }
+            });
+        } else {
+            // Dacă nu avem parametri, limităm la ultimele 100
+            tasks = await Task.findAll({ limit: 100 });
+        }
+
+        return res.status(200).json(tasks || []);
     }
     catch(err) {
         return res.status(500).json({ error: 'Server error' });
