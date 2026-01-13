@@ -5,7 +5,6 @@
 const express = require('express');
 const cors = require('cors');
 const { sequelize } = require('./models');
-const cors = require('cors');  
 
 // Import routes
 const userRoutes = require('./routes/users');
@@ -18,9 +17,6 @@ const PORT = process.env.PORT || 3001;
 // Middleware
 app.use(cors());
 app.use(express.json());
-
-// Development only (CORS)
-app.use(cors());
 
 // Routes
 app.use('/api/users', userRoutes);
