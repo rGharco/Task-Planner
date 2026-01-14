@@ -6,7 +6,7 @@ import Label from '../../components/label/label';
 import LargeButton from '../../components/large_button/large_button';
 import HistoryLine from '../../components/history_line/history_line';
 import ModalPopup from '../../components/modal_popup/modal_popup';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import LabeledList from '../../components/labeled_list/labeled_list';
 import DateField from '../../components/date_field/date_field';
 import Dropdown from '../../components/dropdown/dropdown';
@@ -14,6 +14,7 @@ import TextField from '../../components/text_field/text_field';
 
 export default function HistoryPage() {
     const [showModal, setShowModal] = useState(false);
+    const [historyData, setHistoryData] = useState([]); // stocam aici taskuri din baza de date luate prin API
 
     const [draftFilters, setDraftFilters] = useState({
         date: '',
@@ -47,28 +48,46 @@ export default function HistoryPage() {
         setActiveFilters(emptyFilters);
     };
 
-    const historyData = [
-        { id: 1, date: "2026-01-01", taskTitle: "Financial Report", executant: "John Doe", type: "task_report" },
-        { id: 2, date: "2026-01-01", taskTitle: "Task 2", executant: "User", type: "completed_task" },
-        { id: 3, date: "2025-12-20", taskTitle: "Project Alpha", executant: "John Doe", type: "created_task" },
-        { id: 4, date: "2025-12-20", taskTitle: "Task 2", executant: "User", type: "received_task" }
-    ]
+    // Luam cookie-ul din localStorage pentru a permite userului sa isi ia propriile taskuri
+    const userCookie = JSON.parse(localStorage.getItem('user')) || {};
 
-    const filteredData = historyData.filter(item => {
-        const matchesType = activeFilters.type === '' || item.type === activeFilters.type;
-        const matchesExec = activeFilters.executant === '' || item.executant.toLowerCase().includes(activeFilters.executant.toLowerCase());
-        const matchesDate = activeFilters.date === '' || item.date === activeFilters.date;
-        return matchesType && matchesExec && matchesDate;
-    });
+    useEffect(() => {
+        async function loadHistory() {
+            try {
+                const endDate = new Date(); // luam toate taskurile pana astazi de adaugat la request de implementat pentru filtre
 
-    const groupedData = filteredData.reduce((groups, item) => {
-        const date = item.date;
-        if (!groups[date]) {
-            groups[date] = [];
-        }
-        groups[date].push(item);
-        return groups;
-    }, {});
+                // folosim userId pentru a lua taskurile per user
+                const response = await fetch(`http://localhost:3001/api/tasks/userHistory?userId=${userCookie.id}`); 
+                if (!response.ok) throw new Error(`Server error: ${response.status}`);
+                const tasks = await response.json();
+
+                setHistoryData(tasks);
+            }
+            catch (error) {
+                console.error(`Failed to get task history. Error: ${error}`);
+            }
+        }   
+
+        loadHistory();
+
+    }, []);
+
+    // const filteredData = historyData.filter(item => {
+    //     const matchesType = activeFilters.type === '' || item.status === activeFilters.type;
+    //     const matchesExec = activeFilters.executant === '' || item.executant.toLowerCase().includes(activeFilters.executant.toLowerCase());
+    //     const matchesDate = activeFilters.date === '' || item.date === activeFilters.date;
+    //     return matchesType && matchesExec && matchesDate;
+    // });
+
+
+    // const groupedData = filteredData.reduce((groups, item) => {
+    //     const date = item.deadline ? new Date(item.deadline).toLocaleDateString() : 'No Date';
+    //     if (!groups[date]) {
+    //         groups[date] = [];
+    //     }
+    //     groups[date].push(item);
+    //     return groups;
+    // }, {});
 
     return (
         <>
@@ -79,26 +98,26 @@ export default function HistoryPage() {
                     <LargeButton text="Clear Filters" onClick={handleReset}/>
                 </div>
                 <ScrollBox width="auto" height="60vh">
-                    {/* <LabeledList label="Jan 1, 2026">
-                        <HistoryLine taskTitle="Financial Report" executant="John Doe" type="task_report"/>
-                        <HistoryLine taskTitle="Task 2" type="completed_task"/>
-                    </LabeledList>
-
-                    <LabeledList label="Dec 20, 2025">
-                        <HistoryLine taskTitle="Financial Report" executant="John Doe" type="created_task"/>
-                        <HistoryLine taskTitle="Task 2" type="received_task"/>
-                    </LabeledList> */}
-
-                    {Object.entries(groupedData).map(([date, items]) => (
+                    {/* {Object.entries(historyData).map(([date, items]) => (
                         <LabeledList key={date} label={date}>
                             {items.map(item => (
                                 <HistoryLine 
                                     key={item.id} 
-                                    taskTitle={item.taskTitle} 
-                                    executant={item.executant} 
-                                    type={item.type}
+                                    taskTitle={item.title} 
+                                    executant={item.executor || 'Unknown'} 
+                                    type={item.status} // sau item.category
                                 />
                             ))}
+                        </LabeledList>
+                    ))} */}
+                    {historyData.map(task => (
+                        <LabeledList key={task.id} label={task.deadline ? new Date(task.deadline).toLocaleDateString() : 'No Date'}>
+                            <HistoryLine
+                                key={task.id}
+                                taskTitle={task.title}
+                                executant={task.executor || 'Unknown'}
+                                type={userCookie.id === task.asigneeId ? "created_task" : "received_task"}
+                            />
                         </LabeledList>
                     ))}
                 </ScrollBox>
