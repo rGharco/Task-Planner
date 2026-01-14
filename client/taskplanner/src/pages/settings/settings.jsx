@@ -151,16 +151,22 @@ export default function SettingsPage() {
                             <Label text="Administrator Options:"/>
                             <ScrollBox width="100%" height="100%">
                                 <div className={styles.userContainer}>
-                                {userList.map(item => (
-                                    <UserLine 
-                                        key={item.id}
-                                        id={item.id}
-                                        username={item.name}
-                                        role={item.role}
-                                        manager={item.managerId}
-                                        onClick={() => handleModifyClick(item)}
-                                    />
-                                ))}
+                                {userList.map(item => {
+                                        const managerObj = userList.find(user => user.id === item.managerId);
+                                        const managerName = managerObj ? managerObj.name : "None";
+
+                                        return (
+                                            <UserLine 
+                                                key={item.id}
+                                                id={item.id}
+                                                username={item.name}
+                                                role={item.role}
+                                                // 3. Pass the name instead of the ID
+                                                manager={managerName} 
+                                                onClick={() => handleModifyClick(item)}
+                                            />
+                                        );
+                                    })}
                                 </div>
                             </ScrollBox>
                         </div>
