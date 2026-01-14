@@ -33,7 +33,7 @@ export default function SettingsPage() {
     useEffect(() => {
         async function fetchUsers() {
             try {
-                const response = await fetch("http://localhost:3001/api/users");
+                const response = await fetch("https://task-planner-api-bmko.onrender.com/api/users");
                 if (response.ok) {
                     const data = await response.json();
                     setUserList(data);
@@ -67,7 +67,7 @@ export default function SettingsPage() {
 
     const handleApply = async () => {
         try {
-            const response = await fetch(`http://localhost:3001/api/users/${selectedUser.id}/role`, {
+            const response = await fetch(`https://task-planner-api-bmko.onrender.com/api/users/${selectedUser.id}/role`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -102,7 +102,7 @@ export default function SettingsPage() {
 
     const handleSave = async () => {
         try {
-            const response = await fetch(`http://localhost:3001/api/users/${currentUser.id}`, {
+            const response = await fetch(`https://task-planner-api-bmko.onrender.com/api/users/${currentUser.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

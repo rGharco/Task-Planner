@@ -39,7 +39,7 @@ export default function AssignTaskPage() {
     useEffect(() => {
         async function fetchUsers() {
             try {
-                const response = await fetch("http://localhost:3001/api/users");
+                const response = await fetch("https://task-planner-api-bmko.onrender.com/api/users");
                 if (response.ok) {
                     const data = await response.json();
                     setUsers(data);
@@ -68,7 +68,7 @@ export default function AssignTaskPage() {
         async function loadSubordinates() {
             try {
                 const response = await fetch(
-                    `http://localhost:3001/api/users/getManagerExecutors?managerId=${userCookie.id}`
+                    `https://task-planner-api-bmko.onrender.com/api/users/getManagerExecutors?managerId=${userCookie.id}`
                 );
                 if (!response.ok) throw new Error("Failed to fetch subordinates");
                 const data = await response.json();
@@ -99,13 +99,13 @@ export default function AssignTaskPage() {
             let response;
             
             if (isEditMode) {
-                response = await fetch(`http://localhost:3001/api/tasks/modify/${editTask.id}`, {
+                response = await fetch(`https://task-planner-api-bmko.onrender.com/api/tasks/modify/${editTask.id}`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(taskData),
                 });
             } else {
-                response = await fetch("http://localhost:3001/api/tasks", {
+                response = await fetch("https://task-planner-api-bmko.onrender.com/api/tasks", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(taskData),
