@@ -181,6 +181,59 @@ router.post('/:id/close', async (req, res) => {
     }
 });
 
+/**
+ * PUT /api/completeTask/:id/
+ * Complete a task as the person who executes it, used in profile section
+ * 
+ */
+router.put('/completeTask/:id', async (req, res) => {
+    try {
+        const taskId = Number(req.params.id);
+
+        if (taskId < 0) {
+            return res.status(400).json({
+                message: 'task id cannot be lower than 0'
+            });
+        }
+
+        const toUpdate = await Task.findOne({
+            where: { id: taskId }
+        });
+
+        if (!toUpdate) {
+            return res.status(404).json({
+                message: 'task does not exist'
+            });
+        }
+
+        const {
+            title,
+            description,
+            status,
+            deadline,
+            category
+        } = req.body;
+
+        await toUpdate.update({
+            title: title ?? toUpdate.title,
+            description: description ?? toUpdate.description,
+            status: status ?? toUpdate.status,
+            deadline: deadline ?? toUpdate.deadline,
+            category: category ?? toUpdate.category
+        });
+
+        return res.status(200).json({
+            message: 'updated'
+        });
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            error: `Server error: ${error}`
+        });
+    }
+});
+
 router.put('/modify/:id', async (req, res) => {
     try {
         const taskId = req.params.id;

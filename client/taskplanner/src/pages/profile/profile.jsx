@@ -28,14 +28,23 @@ export default function ProfilePage() {
                 // Fetch tasks created by this user
                 const createdRes = await fetch(`http://localhost:3001/api/tasks/created/${userData.id}`);
                 if (createdRes.ok) {
-                    const createdData = await createdRes.json();
+                    let createdData = await createdRes.json();
+                    
                     setCreatedTasks(createdData);
                 }
 
                 // Fetch tasks assigned to this user
                 const assignedRes = await fetch(`http://localhost:3001/api/tasks/assigned/${userData.id}`);
                 if (assignedRes.ok) {
-                    const assignedData = await assignedRes.json();
+                    let assignedData = await assignedRes.json();
+
+                    // Daca taskurile sunt deja completate numai le afisam
+                    assignedData = assignedData.filter((task) => {
+                        if (task.status !== "COMPLETED") {
+                            return;
+                        }
+                    })
+
                     setAssignedTasks(assignedData);
                 }
             } catch (error) {
@@ -75,6 +84,66 @@ export default function ProfilePage() {
         }
     };
 
+   async function handleCompleteTask(task) {
+        try {
+            const response = await fetch(
+                `http://localhost:3001/api/tasks/modify/${task.id}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        task
+                    })
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error('Failed to update task');
+            }
+
+            setAssignedTasks(prevTasks =>
+                prevTasks.filter(t => t.id !== task.id)
+            );
+        }
+        catch (error) {
+            console.error(
+                `An error occurred marking a task as complete: ${error}`
+            );
+        }
+    }
+
+    async function handleCloseTask(task) {
+        try {
+            const response = await fetch(
+                `http://localhost:3001/api/tasks/modify/${task.id}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        task
+                    })
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error('Failed to update task');
+            }
+
+            setCreatedTasks(prevTasks =>
+                prevTasks.filter(t => t.id !== task.id)
+            );
+        }
+        catch (error) {
+            console.error(
+                `An error occurred marking a task as complete: ${error}`
+            );
+        }
+    }
+
     return (
         <>
             <div className={styles.header_container}>
@@ -112,6 +181,7 @@ export default function ProfilePage() {
                                                 status={task.status}
                                                 onModify={() => handleModifyTask(task)}
                                                 onDelete={() => handleDeleteTask(task.id)}
+                                                onClose={() => handleCloseTask(task)}
                                             />
                                         ))
                                     ) : (
@@ -136,6 +206,7 @@ export default function ProfilePage() {
                                             category={task.category || "No category"}
                                             deadline={task.deadline ? new Date(task.deadline).toLocaleDateString() : "No deadline"}
                                             description={task.description || "No description"}
+                                            onComplete={() => {handleCompleteTask(task)}}
                                         />
                                     ))
                                 ) : (
