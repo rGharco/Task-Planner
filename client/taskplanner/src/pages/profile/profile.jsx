@@ -31,11 +31,11 @@ useEffect(() => {
                 let createdData = await createdRes.json();
                 
                 // Daca taskurile sunt deja completate numai le afisam
-                createdData = createdData.filter(task => task.status !== "COMPLETED");
+                createdData = createdData.filter(task => task.status !== "ENDED");
 
                 setCreatedTasks(createdData);
             }
-
+            
             // Fetch tasks assigned to this user
             const assignedRes = await fetch(`http://localhost:3001/api/tasks/assigned/${userData.id}`);
             if (assignedRes.ok) {
