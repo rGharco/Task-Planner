@@ -3,8 +3,8 @@
  * Main entry point for the Express application
  */
 const express = require('express');
-const cors = require('cors');
-const { sequelize, User } = require('./models'); // folosim User ca sa hardcodam adminul
+const cors = require('cors'); // Declared ONLY here
+const { sequelize, User } = require('./models');
 
 // Import routes
 const userRoutes = require('./routes/users');
@@ -35,7 +35,7 @@ async function insertAdmin() {
     try {
         const existingAdmin = await User.findOne({ where: { email: 'admin@gmail.com' } });
 
-        // Daca nu exista adminul il inseram in baza de date
+        // If admin does not exist, insert it
         if (!existingAdmin) {
             await User.create({
                 email: "admin@gmail.com",
