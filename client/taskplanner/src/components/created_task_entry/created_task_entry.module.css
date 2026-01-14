@@ -5,16 +5,18 @@
     display: flex;
     padding: 5px;
     align-items: center;
+    justify-content: space-between;
     gap:20px;
-}
-
-.entryStyle > *:nth-child(2) {
-    margin-left: auto;
 }
 
 .verticalContainer {
     display: flex;
     flex-direction: column;
+}
+
+.horizontalContainer  {
+    display: flex;
+    gap:10px;
 }
 
 .buttonContainer {
@@ -29,4 +31,25 @@
 
 .taskAsignee {
     font-size: 17px;
+}
+
+.statusTitle {
+    font-size: 16px;
+}
+
+.statusText {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.pendingStyle {
+    color:orange;
+}
+
+.openStyle {
+    color: red;
+}
+
+.completeStyle {
+    color: var(--highlight-green);
 }

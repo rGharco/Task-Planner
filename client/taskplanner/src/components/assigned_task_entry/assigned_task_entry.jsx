@@ -1,3 +1,4 @@
+import SmallButton from '../small_button/small_button';
 import styles from './assigned_task_entry.module.css';
 
 function getTimeLeft(deadline) {
@@ -29,7 +30,7 @@ function formatDeadline(deadline) {
     return new Date(deadline).toLocaleDateString();
 }
 
-export default function AssignedTaskEntry({ title, category, description, deadline }) {
+export default function AssignedTaskEntry({ title, category, description, deadline, onComplete }) {
     return (
         <div className={styles.entryStyle}>
             <div className={styles.horizontalContainer}>
@@ -48,8 +49,9 @@ export default function AssignedTaskEntry({ title, category, description, deadli
                     <div className={styles.taskCategory}>{getTimeLeft(deadline)}</div>
                 </div>
             </div>
-            <div>
+            <div className={styles.horizontalContainer}>
                 {description}
+                <SmallButton text="Mark as Complete" onClick={onComplete}/>
             </div>
         </div>
     )

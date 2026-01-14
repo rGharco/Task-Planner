@@ -109,6 +109,7 @@ export default function ProfilePage() {
                                                 key={task.id}
                                                 title={task.title}
                                                 asignee={task.executor || "Unassigned"}
+                                                status={task.status}
                                                 onModify={() => handleModifyTask(task)}
                                                 onDelete={() => handleDeleteTask(task.id)}
                                             />
