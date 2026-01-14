@@ -219,10 +219,21 @@ router.put('/:id/role', async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
+        const oldRole = user.role;
+
+        // 1. Actualizam userul curent
         await user.update({
-            role: role || user.role,
-            managerId: managerId || null
+            role: role ?? user.role,
+            managerId: role === 'executor' ? managerId ?? null : null
         });
+
+        // 2. Daca era manager și devine executor → curatam subordonaaii
+        if (oldRole === 'manager' && role === 'executor') {
+            await User.update(
+                { managerId: null },
+                { where: { managerId: user.id } }
+            );
+        }
 
         res.status(200).json({
             id: user.id,
@@ -231,6 +242,7 @@ router.put('/:id/role', async (req, res) => {
             role: user.role,
             managerId: user.managerId
         });
+
     } catch (error) {
         console.error('Error updating user role:', error);
         res.status(500).json({ error: 'Internal server error' });
