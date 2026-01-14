@@ -16,12 +16,14 @@ export default function HistoryPage() {
     const [showModal, setShowModal] = useState(false);
     const [historyData, setHistoryData] = useState([]); // stocam aici taskuri din baza de date luate prin API
 
+    // Cand utilizatorul deschide meniul de filtre si le introduce, pana nu da click pe apply nu se modifica in activeFilters
     const [draftFilters, setDraftFilters] = useState({
         date: '',
         type: '',
         executant: ''
     });
 
+    // Cand utilizatorul da click pe Modulepop-up apply atunci drafturile devin active
     const [activeFilters, setActiveFilters] = useState({
         type: '',
         executant: '',
@@ -72,12 +74,19 @@ export default function HistoryPage() {
 
     }, []);
 
-    // const filteredData = historyData.filter(item => {
-    //     const matchesType = activeFilters.type === '' || item.status === activeFilters.type;
-    //     const matchesExec = activeFilters.executant === '' || item.executant.toLowerCase().includes(activeFilters.executant.toLowerCase());
-    //     const matchesDate = activeFilters.date === '' || item.date === activeFilters.date;
-    //     return matchesType && matchesExec && matchesDate;
-    // });
+    // Pentru ca maparea e complexa in functie fie de cine a facut taskul fie de statusul lui folosim functia asta pentru compatbilitiate
+    const mapStatusToType = (task) => {
+        if (task.status === "CLOSED") return "completed_task";
+        if (userCookie.id === task.asigneeId) return "created_task";
+        return "received_task";
+    };
+
+    const filteredData = historyData.filter(task => {
+        const matchesType = activeFilters.type === '' || mapStatusToType(task) === activeFilters.type;
+        const matchesExec = activeFilters.executant === '' || (task.executor || '').toLowerCase().includes(activeFilters.executant.toLowerCase());
+        const matchesDate = activeFilters.date === '' || (task.deadline && new Date(task.deadline).toISOString().split('T')[0] === activeFilters.date);
+        return matchesType && matchesExec && matchesDate;
+    });
 
 
     // const groupedData = filteredData.reduce((groups, item) => {
@@ -89,41 +98,34 @@ export default function HistoryPage() {
     //     return groups;
     // }, {});
 
+    const subordinates = [
+        {id: 1, username: "John Doe"},
+        {id: 2, username: "Jane Smith"}
+    ];
+
     return (
         <>
             <PageTitle text="History"/>
-            <InterfaceBackground>
+            <InterfaceBackground height="75vh">
                 <div className={styles.button}>
                     <LargeButton text="Filter History" onClick={() => setShowModal(true)}/>
                     <LargeButton text="Clear Filters" onClick={handleReset}/>
                 </div>
                 <ScrollBox width="auto" height="60vh">
-                    {/* {Object.entries(historyData).map(([date, items]) => (
-                        <LabeledList key={date} label={date}>
-                            {items.map(item => (
-                                <HistoryLine 
-                                    key={item.id} 
-                                    taskTitle={item.title} 
-                                    executant={item.executor || 'Unknown'} 
-                                    type={item.status} // sau item.category
-                                />
-                            ))}
-                        </LabeledList>
-                    ))} */}
-                    {historyData.map(task => (
+                    {filteredData.map(task => (
                         <LabeledList key={task.id} label={task.deadline ? new Date(task.deadline).toLocaleDateString() : 'No Date'}>
                             <HistoryLine
                                 key={task.id}
                                 taskTitle={task.title}
                                 executant={task.executor || 'Unknown'}
-                                type={userCookie.id === task.asigneeId ? "created_task" : "received_task"}
+                                type={mapStatusToType(task)}
                             />
                         </LabeledList>
                     ))}
                 </ScrollBox>
             </InterfaceBackground>
             {showModal &&
-            <ModalPopup onClose={handleCancel} onApply={handleApply}>
+            <ModalPopup onClose={handleCancel} onApply={handleApply} width="400px" height="460px">
                 <Label text="Choose filters:"/>
                 <DateField text="Date:" value={draftFilters.date} onChange={(e) => setDraftFilters({...draftFilters, date: e.target.value})}/>
                 <Dropdown text="Select Type:" value={draftFilters.type} onChange={(e) => setDraftFilters({...draftFilters, type: e.target.value})}>
@@ -133,7 +135,14 @@ export default function HistoryPage() {
                     <option value="received_task">Received Task</option>
                     <option value="completed_task">Completed Task</option>
                 </Dropdown>
-                <TextField text="Executant:" value={draftFilters.executant} onChange={(e) => setDraftFilters({...draftFilters, executant: e.target.value})}/>
+                <Dropdown text="Select Executant:" value={draftFilters.executant} onChange={(e) => setDraftFilters({...draftFilters, executant: e.target.value})}>
+                    <option value="">Any Subordinate</option>
+                    {
+                        subordinates.map(subordinate => (
+                            <option value={subordinate.username}>{subordinate.username}</option>
+                        ))
+                    }
+                </Dropdown>
             </ModalPopup>}
         </>
     )

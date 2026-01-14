@@ -111,7 +111,7 @@ export default function SettingsPage() {
     return (
         <>
             <PageTitle text="Settings"/>
-            <InterfaceBackground>
+            <InterfaceBackground height="75vh">
                 <div className={styles.horizontal_container}>
                     <div className={styles.left_container}>
                         <div className={styles.inputFields}>
@@ -153,7 +153,7 @@ export default function SettingsPage() {
                 </div>
             </InterfaceBackground>
             {showModal && 
-            <ModalPopup onClose={handleCancel} onApply={handleApply} width="25%" height="35%">
+            <ModalPopup onClose={handleCancel} onApply={handleApply} width="400px" height="300px">
                 <Dropdown text="Change Role:" value={selectedUser.role} onChange={(e) => handleModalChange('role', e.target.value)}>
                     <option value="executor">Executor</option>
                     <option value="manager">Manager</option>

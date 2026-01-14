@@ -15,6 +15,8 @@ export default function ProfilePage() {
     // Get logged in user data
     const userData = JSON.parse(localStorage.getItem('user')) || {};
 
+    const isExecutor = userData.role === "executor" ? true : false;
+
     const [createdTasks, setCreatedTasks] = useState([]);
     const [assignedTasks, setAssignedTasks] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -81,7 +83,7 @@ export default function ProfilePage() {
                     Logout
                 </button>
             </div>
-            <InterfaceBackground>
+            <InterfaceBackground height="75vh">
                 <div className={styles.horizontal_container}>
                     <div className={styles.left_container}>
                         <Label text="User Information"/>
@@ -90,29 +92,34 @@ export default function ProfilePage() {
                                 <InfoLine heading="User:" info={userData.name || "User's Name"}/>
                                 <InfoLine heading="User ID:" info={userData.id || "User's ID"}/>
                                 <InfoLine heading="Email:" info={userData.email || "User's Email"}/>
+                                <InfoLine heading="Role:" info={userData.role || "User's Role"}/>
                                 <InfoLine heading="Birth Date:" info={userData.birthDate || "Not provided"}/>
                             </div>
                         </div>
-                        <Label text="Created Tasks"/>
-                        <div className={styles.section_box_scroll}>
-                            <div className={styles.small_gap_vertical_container}>
-                                {loading ? (
-                                    <TextInfo text="Loading..."/>
-                                ) : createdTasks.length > 0 ? (
-                                    createdTasks.map(task => (
-                                        <CreatedTaskEntry
-                                            key={task.id}
-                                            title={task.title}
-                                            asignee={task.executor || "Unassigned"}
-                                            onModify={() => handleModifyTask(task)}
-                                            onDelete={() => handleDeleteTask(task.id)}
-                                        />
-                                    ))
-                                ) : (
-                                    <TextInfo text="No created tasks"/>
-                                )}
+                        {!isExecutor &&
+                        <div>
+                            <Label text="Created Tasks"/>
+                            <div className={styles.section_box_scroll}>
+                                <div className={styles.small_gap_vertical_container}>
+                                    {loading ? (
+                                        <TextInfo text="Loading..."/>
+                                    ) : createdTasks.length > 0 ? (
+                                        createdTasks.map(task => (
+                                            <CreatedTaskEntry
+                                                key={task.id}
+                                                title={task.title}
+                                                asignee={task.executor || "Unassigned"}
+                                                onModify={() => handleModifyTask(task)}
+                                                onDelete={() => handleDeleteTask(task.id)}
+                                            />
+                                        ))
+                                    ) : (
+                                        <TextInfo text="No created tasks"/>
+                                    )}
+                                </div>
                             </div>
                         </div>
+                        }
                     </div>
                     <div className={styles.right_container}>
                         <Label text="Assigned Tasks"/>
