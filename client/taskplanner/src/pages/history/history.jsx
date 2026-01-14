@@ -102,10 +102,47 @@ export default function HistoryPage() {
         return "received_task";
     };
 
+    // folosim pentru a afisa datele corect in functie de ce type de task s-a cerut, completed, etc.
+    const getTaskEventDate = (task) => {
+        const type = mapStatusToType(task);
+
+        switch (type) {
+            case 'created_task':
+                return task.createdAt;
+
+            // va trebui inlocuit cu un field special de assignedAt 
+            case 'received_task':
+                return task.createdAt;
+
+            case 'completed_task':
+                return task.completedAt;
+
+            case 'closed_task':
+                return task.updatedAt;
+
+            default:
+                return null;
+        }
+    };  
+
     const filteredData = historyData.filter(task => {
-        const matchesType = activeFilters.type === '' || mapStatusToType(task) === activeFilters.type;
-        const matchesExec = activeFilters.executant === '' || (task.executor || '').toLowerCase().includes(activeFilters.executant.toLowerCase());
-        const matchesDate = activeFilters.date === '' || (task.deadline && new Date(task.deadline).toISOString().split('T')[0] === activeFilters.date);
+        const eventDate = getTaskEventDate(task);
+
+        const matchesDate =
+            activeFilters.date === '' ||
+            (eventDate &&
+            new Date(eventDate).toISOString().split('T')[0] === activeFilters.date);
+
+        const matchesType =
+            activeFilters.type === '' ||
+            mapStatusToType(task) === activeFilters.type;
+
+        const matchesExec =
+            activeFilters.executant === '' ||
+            (task.executor || '')
+            .toLowerCase()
+            .includes(activeFilters.executant.toLowerCase());
+
         return matchesType && matchesExec && matchesDate;
     });
 
@@ -137,7 +174,7 @@ export default function HistoryPage() {
                 </div>
                 <ScrollBox width="auto" height="60vh">
                     {filteredData.map(task => (
-                        <LabeledList key={task.id} label={task.deadline ? new Date(task.deadline).toLocaleDateString() : 'No Date'}>
+                        <LabeledList key={task.id} label={getTaskEventDate(task) ? new Date(getTaskEventDate(task)).toLocaleDateString() : 'No date'}>
                             <HistoryLine
                                 key={task.id}
                                 taskTitle={task.title}
