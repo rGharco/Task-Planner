@@ -62,7 +62,7 @@ export default function HistoryPage() {
                 const response = await fetch(`http://localhost:3001/api/tasks/userHistory?userId=${userCookie.id}`); 
                 if (!response.ok) throw new Error(`Server error: ${response.status}`);
                 const tasks = await response.json();
-
+                
                 setHistoryData(tasks);
             }
             catch (error) {
@@ -77,7 +77,7 @@ export default function HistoryPage() {
     // Pentru ca maparea e complexa in functie fie de cine a facut taskul fie de statusul lui folosim functia asta pentru compatbilitiate
     const mapStatusToType = (task) => {
         if (task.status === "CLOSED") return "completed_task";
-        if (userCookie.id === task.asigneeId) return "created_task";
+        if (userCookie.id === task.creatorId) return "created_task";
         return "received_task";
     };
 
@@ -87,16 +87,6 @@ export default function HistoryPage() {
         const matchesDate = activeFilters.date === '' || (task.deadline && new Date(task.deadline).toISOString().split('T')[0] === activeFilters.date);
         return matchesType && matchesExec && matchesDate;
     });
-
-
-    // const groupedData = filteredData.reduce((groups, item) => {
-    //     const date = item.deadline ? new Date(item.deadline).toLocaleDateString() : 'No Date';
-    //     if (!groups[date]) {
-    //         groups[date] = [];
-    //     }
-    //     groups[date].push(item);
-    //     return groups;
-    // }, {});
 
     const subordinates = [
         {id: 1, username: "John Doe"},
@@ -135,14 +125,14 @@ export default function HistoryPage() {
                     <option value="received_task">Received Task</option>
                     <option value="completed_task">Completed Task</option>
                 </Dropdown>
-                <Dropdown text="Select Executant:" value={draftFilters.executant} onChange={(e) => setDraftFilters({...draftFilters, executant: e.target.value})}>
+                {userCookie.role ==="manager" && <Dropdown text="Select Executant:" value={draftFilters.executant} onChange={(e) => setDraftFilters({...draftFilters, executant: e.target.value})}>
                     <option value="">Any Subordinate</option>
                     {
                         subordinates.map(subordinate => (
                             <option value={subordinate.username}>{subordinate.username}</option>
                         ))
                     }
-                </Dropdown>
+                </Dropdown>}
             </ModalPopup>}
         </>
     )

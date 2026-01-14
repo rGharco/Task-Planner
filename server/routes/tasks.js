@@ -62,8 +62,8 @@ router.get('/userHistory', async (req, res) => {
         // 2. Construim whereClause
         const whereClause = {
             [Op.or]: [
-                { asigneeId: userId },        // taskurile in care e asignee
-                { executor: userEmail }       // taskurile in care e executor
+                { creatorId: userId },        // taskurile in care e asignee
+                { asigneeId: userId }       // taskurile in care e executor
             ]
         };
 
