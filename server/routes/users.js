@@ -77,14 +77,15 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ error: 'Invalid email or password' });
         }
 
-        // Return user data (excluding password)
+        // Return user data (excluding password) and add admin field when the admin logs in 
         res.status(200).json({
             id: user.id,
             email: user.email,
             name: user.name,
             birthDate: user.birthDate,
             role: user.role,
-            managerId: user.managerId
+            managerId: user.managerId,
+            isAdmin: user.role === "admin"
         });
     } catch (error) {
         console.error('Error logging in:', error);
