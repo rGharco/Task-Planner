@@ -40,13 +40,65 @@ router.get('/', async (req, res) => {
 });
 
 /**
+ * GET /api/tasks
+ * Request all the tasks or the task based on a date and based on user (used in history page to display tasks)
+ * Query parameters: startDate, endDate (tasks?userId=<x>&startDate=<X>&endDate=<X>)
+ */
+router.get('/userHistory', async (req, res) => {
+    try {
+        const { userId, startDate, endDate } = req.query;
+
+        if (!userId) {
+            return res.status(400).json({ error: 'userId query parameter is required' });
+        }
+
+        // 1. Luam email-ul userului
+        const user = await User.findByPk(userId);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        const userEmail = user.email;
+
+        // 2. Construim whereClause
+        const whereClause = {
+            [Op.or]: [
+                { asigneeId: userId },        // taskurile in care e asignee
+                { executor: userEmail }       // taskurile in care e executor
+            ]
+        };
+
+        // 3. Filtrare dupa date, daca exista
+        if (startDate && endDate) {
+            whereClause[Op.and] = [
+                {
+                    deadline: {
+                        [Op.between]: [new Date(startDate), new Date(endDate)]
+                    }
+                }
+            ];
+        }
+
+        // 4. Query final
+        const tasks = await Task.findAll({
+            where: whereClause,
+            order: [['deadline', 'DESC']],
+        });
+
+        return res.status(200).json(tasks || []);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Server error' });
+    }
+});
+
+/**
  * POST /api/tasks
  * Create a new task
  * Body: { title, description, deadline, category }
  */
 router.post('/', async (req, res) => {
     try {
-        const { title, executor, deadline, description, category } = req.body;
+        const { title, executor, asigneeId, deadline, description, category } = req.body;
         let task;
 
         // Validate required fields
@@ -61,6 +113,8 @@ router.post('/', async (req, res) => {
                 title,
                 description: description || null,
                 status: 'OPEN',
+                executor: executor,
+                asigneeId: asigneeId,
                 deadline: deadline || null,
                 category: category || null,
             });
@@ -70,6 +124,8 @@ router.post('/', async (req, res) => {
                 title,
                 description: description || null,
                 status: 'PENDING',
+                executor: executor,
+                asigneeId: asigneeId,
                 deadline: deadline || null,
                 category: category || null,
             });
@@ -244,5 +300,70 @@ router.delete('/delete/:id', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+/**
+ * GET /api/tasks/created/:userId
+ * Get all tasks created by a specific user
+ */
+router.get('/created/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const tasks = await Task.findAll({
+            where: { creatorId: userId }
+        });
+        return res.status(200).json(tasks);
+    } catch (error) {
+        console.error('Error fetching created tasks:', error);
+        return res.status(500).json({ error: 'Server error' });
+    }
+});
+
+/**
+ * GET /api/tasks/assigned/:userId
+ * Get all tasks assigned to a specific user
+ */
+router.get('/assigned/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const tasks = await Task.findAll({
+            where: { asigneeId: userId }
+        });
+        return res.status(200).json(tasks);
+    } catch (error) {
+        console.error('Error fetching assigned tasks:', error);
+        return res.status(500).json({ error: 'Server error' });
+    }
+});
+
+router.post('/', async (req, res) => {
+    try {
+        const { title, executor, asigneeId, deadline, description, category, creatorId } = req.body;
+        let task;
+
+        if (title.trim().length === 0) {
+            return res.status(400).json({
+                error: 'Missing required fields: title'
+            });
+        }
+
+        task = await Task.create({
+            title,
+            description: description || null,
+            status: asigneeId ? 'PENDING' : 'OPEN',
+            executor: executor || null,
+            asigneeId: asigneeId || null,
+            deadline: deadline || null,
+            category: category || null,
+            creatorId: creatorId || null,
+        });
+
+        res.status(201).json(task);
+    } catch (error) {
+        console.error('Error creating task:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
 
 module.exports = router;

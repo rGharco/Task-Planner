@@ -1,10 +1,10 @@
 import styles from './plus_button.module.css'
 import { FaPlusCircle } from "react-icons/fa";
 
-export default function PlusButton( {href} ) {
+export default function PlusButton({ onClick }) {
     return (
-        <a href={href} className={styles.buttonStyle}>
+        <div onClick={onClick} className={styles.buttonStyle}>
             <FaPlusCircle/>
-        </a>
+        </div>
     )
 }

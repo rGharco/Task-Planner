@@ -36,3 +36,31 @@
     gap:30px;
 }
 
+.select_container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.select_label {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 18px;
+    color: white;
+    margin-bottom: 5px;
+}
+
+.select_field {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 16px;
+    padding: 10px;
+    border: 2px solid var(--highlight-green);
+    border-radius: 10px;
+    background-color: rgba(33, 40, 50, 0.5);
+    color: white;
+    cursor: pointer;
+}
+
+.select_field option {
+    background-color: #1a1a2e;
+    color: white;
+}

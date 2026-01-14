@@ -4,7 +4,7 @@
  */
 const express = require('express');
 const cors = require('cors');
-const { sequelize } = require('./models');
+const { sequelize, User } = require('./models'); // folosim User ca sa hardcodam adminul
 
 // Import routes
 const userRoutes = require('./routes/users');
@@ -31,11 +31,35 @@ app.get('/api/health', (req, res) => {
 // Initialize database and start server
 console.log('Starting server...');
 
+async function insertAdmin() {
+    try {
+        const existingAdmin = await User.findOne({ where: { email: 'admin@gmail.com' } });
+
+        // Daca nu exista adminul il inseram in baza de date
+        if (!existingAdmin) {
+            await User.create({
+                email: "admin@gmail.com",
+                name: "Admin",
+                password: "admin", 
+                birthDate: new Date().toISOString(),
+                role: 'admin',
+                managerId: null
+            });
+            console.log('Created Admin User!');
+        } else {
+            console.log('Admin already exists.');
+        }
+    } catch (error) {
+        console.error('Error creating admin:', error);
+    }
+}
+
 sequelize.sync({ force: false })
     .then(() => {
         console.log('Database synchronized successfully');
         app.listen(PORT, () => {
             console.log(`Server is running on http://localhost:${PORT}`);
+            insertAdmin();
         });
     })
     .catch((error) => {

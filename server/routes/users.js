@@ -77,14 +77,15 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ error: 'Invalid email or password' });
         }
 
-        // Return user data (excluding password)
+        // Return user data (excluding password) and add admin field when the admin logs in 
         res.status(200).json({
             id: user.id,
             email: user.email,
             name: user.name,
             birthDate: user.birthDate,
             role: user.role,
-            managerId: user.managerId
+            managerId: user.managerId,
+            isAdmin: user.role === "admin"
         });
     } catch (error) {
         console.error('Error logging in:', error);
@@ -121,5 +122,38 @@ router.post('/:id/assign-manager', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+/**
+ * GET /api/users
+ * Get all users
+ */
+router.get('/', async (req, res) => {
+    try {
+        const users = await User.findAll({
+            attributes: ['id', 'name', 'email', 'role']
+        });
+        res.status(200).json(users);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+/**
+ * GET /api/users
+ * Get all users
+ */
+router.get('/', async (req, res) => {
+    try {
+        const users = await User.findAll({
+            attributes: ['id', 'name', 'email', 'role']
+        });
+        res.status(200).json(users);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 
 module.exports = router;

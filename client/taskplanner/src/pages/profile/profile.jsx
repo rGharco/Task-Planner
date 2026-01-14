@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import InterfaceBackground from '../../components/interface_background/interface_background';
 import styles from './profile.module.css';
 import PageTitle from '../../components/page_title/page_title';
@@ -6,6 +7,7 @@ import Label from '../../components/label/label';
 import InfoLine from '../../components/info_line/info_line';
 import CreatedTaskEntry from '../../components/created_task_entry/created_task_entry';
 import AssignedTaskEntry from '../../components/assigned_task_entry/assigned_task_entry';
+import TextInfo from '../../components/text_info/text_info';
 
 export default function ProfilePage() {
     const navigate = useNavigate();
@@ -13,11 +15,62 @@ export default function ProfilePage() {
     // Get logged in user data
     const userData = JSON.parse(localStorage.getItem('user')) || {};
 
+    const [createdTasks, setCreatedTasks] = useState([]);
+    const [assignedTasks, setAssignedTasks] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    // Fetch tasks from API
+    useEffect(() => {
+        async function fetchTasks() {
+            try {
+                // Fetch tasks created by this user
+                const createdRes = await fetch(`http://localhost:3001/api/tasks/created/${userData.id}`);
+                if (createdRes.ok) {
+                    const createdData = await createdRes.json();
+                    setCreatedTasks(createdData);
+                }
+
+                // Fetch tasks assigned to this user
+                const assignedRes = await fetch(`http://localhost:3001/api/tasks/assigned/${userData.id}`);
+                if (assignedRes.ok) {
+                    const assignedData = await assignedRes.json();
+                    setAssignedTasks(assignedData);
+                }
+            } catch (error) {
+                console.error('Error fetching tasks:', error);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        if (userData.id) {
+            fetchTasks();
+        } else {
+            setLoading(false);
+        }
+    }, [userData.id]);
+
     const handleLogout = () => {
-        // Clear user data from localStorage
         localStorage.removeItem('user');
-        // Redirect to login page
         navigate('/login');
+    };
+
+    const handleModifyTask = (task) => {
+        navigate('/assign-task', { state: { editTask: task } });
+    };
+
+    const handleDeleteTask = async (taskId) => {
+        try {
+            const response = await fetch(`http://localhost:3001/api/tasks/delete/${taskId}`, {
+                method: 'DELETE'
+            });
+            if (response.ok) {
+                // Remove from local state
+                setCreatedTasks(createdTasks.filter(task => task.id !== taskId));
+            }
+        } catch (error) {
+            console.error('Error deleting task:', error);
+        }
     };
 
     return (
@@ -41,26 +94,46 @@ export default function ProfilePage() {
                                 <InfoLine heading="Birth Date:" info={userData.birthDate || "Not provided"}/>
                             </div>
                         </div>
-                        
                         <Label text="Created Tasks"/>
                         <div className={styles.section_box_scroll}>
                             <div className={styles.small_gap_vertical_container}>
-                                <CreatedTaskEntry title="Task 1" asignee="John Doe"/>
-                                <CreatedTaskEntry title="Task 2" asignee="Jane Doe"/>
+                                {loading ? (
+                                    <TextInfo text="Loading..."/>
+                                ) : createdTasks.length > 0 ? (
+                                    createdTasks.map(task => (
+                                        <CreatedTaskEntry
+                                            key={task.id}
+                                            title={task.title}
+                                            asignee={task.executor || "Unassigned"}
+                                            onModify={() => handleModifyTask(task)}
+                                            onDelete={() => handleDeleteTask(task.id)}
+                                        />
+                                    ))
+                                ) : (
+                                    <TextInfo text="No created tasks"/>
+                                )}
                             </div>
                         </div>
                     </div>
-                    
                     <div className={styles.right_container}>
                         <Label text="Assigned Tasks"/>
                         <div className={styles.section_box_scroll}>
                             <div className={styles.small_gap_vertical_container}>
-                                <AssignedTaskEntry title="Task 1" category="Example" deadline="1 Jan 2025"
-                                description="Task description goes here"
-                                />
-                                <AssignedTaskEntry title="Task 2" category="Example" deadline="2 Jan 2025"
-                                description="Task description goes here"
-                                />
+                                {loading ? (
+                                    <p>Loading...</p>
+                                ) : assignedTasks.length > 0 ? (
+                                    assignedTasks.map(task => (
+                                        <AssignedTaskEntry
+                                            key={task.id}
+                                            title={task.title}
+                                            category={task.category || "No category"}
+                                            deadline={task.deadline ? new Date(task.deadline).toLocaleDateString() : "No deadline"}
+                                            description={task.description || "No description"}
+                                        />
+                                    ))
+                                ) : (
+                                    <TextInfo text="No assigned tasks"/>
+                                )}
                             </div>
                         </div>
                     </div>
