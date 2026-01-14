@@ -11,6 +11,7 @@ import ModalPopup from '../../components/modal_popup/modal_popup';
 import { useState, useEffect } from 'react';
 import Dropdown from '../../components/dropdown/dropdown';
 import TextInfo from '../../components/text_info/text_info';
+import api from '../../api';
 
 export default function SettingsPage() {
 

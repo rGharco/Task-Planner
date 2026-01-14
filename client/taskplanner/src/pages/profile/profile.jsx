@@ -8,6 +8,7 @@ import InfoLine from '../../components/info_line/info_line';
 import CreatedTaskEntry from '../../components/created_task_entry/created_task_entry';
 import AssignedTaskEntry from '../../components/assigned_task_entry/assigned_task_entry';
 import TextInfo from '../../components/text_info/text_info';
+import api from '../../api';
 
 export default function ProfilePage() {
 const navigate = useNavigate();

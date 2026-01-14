@@ -11,6 +11,8 @@ import LabeledList from '../../components/labeled_list/labeled_list';
 import DateField from '../../components/date_field/date_field';
 import Dropdown from '../../components/dropdown/dropdown';
 import TextField from '../../components/text_field/text_field';
+import api from '../../api';
+
 
 export default function HistoryPage() {
     const [showModal, setShowModal] = useState(false);

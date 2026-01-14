@@ -7,6 +7,7 @@ import TaskTable from '../../components/task_table/task_table';
 import TaskTableEntry from '../../components/task_table_entry/task_table_entry';
 import {Chart} from 'react-google-charts'
 import {useState, useEffect} from 'react';
+import api from '../../api';
 
 // Folosit cand utilizatorul foloseste filtre, se trimite la functia loadFilteredTasks
 const FilterTypes = {

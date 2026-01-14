@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import styles from './register.module.css';
 import InterfaceBackground from '../../components/interface_background/interface_background';
 import PageTitle from '../../components/page_title/page_title';
+import api from '../../api';
 
 export default function RegisterPage() {
     const navigate = useNavigate();
