@@ -88,9 +88,9 @@ export default function AssignTaskPage() {
             title: taskTitle,
             executor: executor,
             asigneeId: asigneeId || null,
-            deadline: deadline,
+            deadline: deadline, 
             description: description,
-            status: isEditMode ? (editTask.status || "OPEN") : "OPEN",
+            status: executor ? "PENDING":"OPEN",
             category: isEditMode ? (editTask.category || null) : null,
             creatorId: user?.id
         };

@@ -244,6 +244,8 @@ router.put('/modify/:id', async (req, res) => {
             title: JSONBody.title,
             description: JSONBody.description,
             status: JSONBody.status,
+            executor: JSONBody.executor,
+            asigneeId: JSONBody.asigneeId,
             deadline: JSONBody.deadline,
             category: JSONBody.category
         });
