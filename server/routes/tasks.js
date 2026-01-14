@@ -40,7 +40,7 @@ router.get('/', async (req, res) => {
 });
 
 /**
- * GET /api/tasks
+ * GET /api/tasks/userHistory
  * Request all the tasks or the task based on a date and based on user (used in history page to display tasks)
  * Query parameters: startDate, endDate (tasks?userId=<x>&startDate=<X>&endDate=<X>)
  */
@@ -88,54 +88,6 @@ router.get('/userHistory', async (req, res) => {
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error' });
-    }
-});
-
-/**
- * POST /api/tasks
- * Create a new task
- * Body: { title, description, deadline, category }
- */
-router.post('/', async (req, res) => {
-    try {
-        const { title, executor, asigneeId, deadline, description, category } = req.body;
-        let task;
-
-        // Validate required fields
-        if (title.trim().length === 0) {
-            return res.status(400).json({ 
-                error: 'Missing required fields: title' 
-            }); 
-            }
-
-        if (!executor) {
-            task = await Task.create({
-                title,
-                description: description || null,
-                status: 'OPEN',
-                executor: executor,
-                asigneeId: asigneeId,
-                deadline: deadline || null,
-                category: category || null,
-            });
-        }
-        else {
-            task = await Task.create({
-                title,
-                description: description || null,
-                status: 'PENDING',
-                executor: executor,
-                asigneeId: asigneeId,
-                deadline: deadline || null,
-                category: category || null,
-            });
-        }
-        
-
-        res.status(201).json(task);
-    } catch (error) {
-        console.error('Error creating task:', error);
-        res.status(500).json({ error: 'Internal server error' });
     }
 });
 
