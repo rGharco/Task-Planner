@@ -12,6 +12,7 @@ import ScrollBox from '../../components/scroll_box/scroll_box';
 import TextField from '../../components/text_field/text_field';
 import { useState, useEffect } from "react";
 import Dropdown from '../../components/dropdown/dropdown';
+import api from '../../api';
 
 export default function AssignTaskPage() {
     const location = useLocation();
@@ -39,7 +40,7 @@ export default function AssignTaskPage() {
     useEffect(() => {
         async function fetchUsers() {
             try {
-                const response = await fetch("http://localhost:3001/api/users");
+                const response = await fetch(`${api}/api/users`);
                 if (response.ok) {
                     const data = await response.json();
                     setUsers(data);
@@ -68,7 +69,7 @@ export default function AssignTaskPage() {
         async function loadSubordinates() {
             try {
                 const response = await fetch(
-                    `http://localhost:3001/api/users/getManagerExecutors?managerId=${userCookie.id}`
+                    `${api}/api/users/getManagerExecutors?managerId=${userCookie.id}`
                 );
                 if (!response.ok) throw new Error("Failed to fetch subordinates");
                 const data = await response.json();
@@ -99,13 +100,13 @@ export default function AssignTaskPage() {
             let response;
             
             if (isEditMode) {
-                response = await fetch(`http://localhost:3001/api/tasks/modify/${editTask.id}`, {
+                response = await fetch(`${api}/api/tasks/modify/${editTask.id}`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(taskData),
                 });
             } else {
-                response = await fetch("http://localhost:3001/api/tasks", {
+                response = await fetch(`${api}/api/tasks`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(taskData),

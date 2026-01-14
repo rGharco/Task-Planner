@@ -76,7 +76,7 @@ export default function DashboardPage() {
                 const startDate = monday.toISOString(); // pentru a fi in acelasi format cu baza de date
                 const endDate = friday.toISOString();
 
-                const response = await fetch(`http://localhost:3001/api/tasks?startDate=${startDate}&endDate=${endDate}`);
+                const response = await fetch(`${api}/api/tasks?startDate=${startDate}&endDate=${endDate}`);
                 if (!response.ok) throw new Error(`Server error: ${response.status}`);
                 const tasks = await response.json();
 
@@ -126,7 +126,7 @@ export default function DashboardPage() {
 
         try {
             const response = await fetch(
-                `http://localhost:3001/api/tasks?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`
+                `${api}/api/tasks?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`
             );
 
             if (!response.ok) {

@@ -26,7 +26,7 @@ useEffect(() => {
     async function fetchTasks() {
         try {
             // Fetch tasks created by this user
-            const createdRes = await fetch(`http://localhost:3001/api/tasks/created/${userData.id}`);
+            const createdRes = await fetch(`${api}/api/tasks/created/${userData.id}`);
             if (createdRes.ok) {
                 let createdData = await createdRes.json();
                 
@@ -37,7 +37,7 @@ useEffect(() => {
             }
             
             // Fetch tasks assigned to this user
-            const assignedRes = await fetch(`http://localhost:3001/api/tasks/assigned/${userData.id}`);
+            const assignedRes = await fetch(`${api}/api/tasks/assigned/${userData.id}`);
             if (assignedRes.ok) {
                 let assignedData = await assignedRes.json();
 
@@ -71,7 +71,7 @@ const handleModifyTask = (task) => {
 
 const handleDeleteTask = async (taskId) => {
     try {
-        const response = await fetch(`http://localhost:3001/api/tasks/delete/${taskId}`, {
+        const response = await fetch(`${api}/api/tasks/delete/${taskId}`, {
             method: 'DELETE'
         });
         if (response.ok) {
@@ -86,7 +86,7 @@ const handleDeleteTask = async (taskId) => {
 async function handleCompleteTask(task) {
     try {
         const response = await fetch(
-            `http://localhost:3001/api/tasks/completeTask/${task.id}`,
+            `${api}/api/tasks/completeTask/${task.id}`,
             {
                 method: 'PUT'
             }
@@ -107,7 +107,7 @@ async function handleCompleteTask(task) {
 async function handleCloseTask(task) {
     try {
         const response = await fetch(
-            `http://localhost:3001/api/tasks/endTask/${task.id}`,
+            `${api}/api/tasks/endTask/${task.id}`,
             {
                 method: 'PUT'
             }

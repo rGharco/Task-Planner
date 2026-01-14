@@ -66,7 +66,7 @@ export default function HistoryPage() {
                     }
                 }
 
-                const response = await fetch(`http://localhost:3001/api/tasks/userHistory?userId=${targetUserId}`); 
+                const response = await fetch(`${api}/api/tasks/userHistory?userId=${targetUserId}`); 
                 if (!response.ok) throw new Error(`Server error: ${response.status}`);
                 const tasks = await response.json();
                 
@@ -150,7 +150,7 @@ export default function HistoryPage() {
         if (userCookie.role === "manager") {
             async function loadSubordinates() {
                 try {
-                    const response = await fetch(`http://localhost:3001/api/users/getManagerExecutors?managerId=${userCookie.id}`); 
+                    const response = await fetch(`${api}/api/users/getManagerExecutors?managerId=${userCookie.id}`); 
                     if (!response.ok) throw new Error("Failed to fetch subordinates");
                     const data = await response.json();
                     console.log(data);
