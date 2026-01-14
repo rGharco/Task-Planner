@@ -11,6 +11,7 @@ import PlusButton from '../../components/plus_button/plus_button';
 import ScrollBox from '../../components/scroll_box/scroll_box';
 import TextField from '../../components/text_field/text_field';
 import { useState, useEffect } from "react";
+import Dropdown from '../../components/dropdown/dropdown';
 
 export default function AssignTaskPage() {
     const location = useLocation();
@@ -119,24 +120,14 @@ export default function AssignTaskPage() {
                 <div className={styles.page_container}>
                     <div className={styles.left_container}>
                         <TextField text="Task Title" value={taskTitle} onChange={(e) => setTaskTitle(e.target.value)}/>
-                        <div className={styles.input_button_container}>
-                            <div className={styles.select_container}>
-                                <label className={styles.select_label}>Executor</label>
-                                <select 
-                                    className={styles.select_field}
-                                    value={asigneeId}
-                                    onChange={handleExecutorChange}
-                                >
-                                    <option value="">Select executor...</option>
-                                    {users.map(user => (
-                                        <option key={user.id} value={user.id}>
-                                            {user.name} ({user.email})
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                            <PlusButton onClick={() => console.log("Add executor")}/>
-                        </div>
+                        <Dropdown text="Executor" value={asigneeId} onChange={handleExecutorChange}>
+                            <option value="">Select executor...</option>
+                            {users.map(user => (
+                                <option key={user.id} value={user.id}>
+                                    {user.name} ({user.email})
+                                </option>
+                            ))}
+                        </Dropdown>
                         <DateField text="Deadline" value={deadline} onChange={(e) => setDeadline(e.target.value)}/>
                         <LargeTextField text="Description" value={description} onChange={(e) => setDescription(e.target.value)}/>
                         <FileAttach text="Add File"/>
