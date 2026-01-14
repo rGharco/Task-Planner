@@ -27,6 +27,14 @@ export default function AssignTaskPage() {
     const [description, setDescription] = useState("");
     const [users, setUsers] = useState([]);
 
+    const [subordinates, setSubordinates] = useState([]);
+
+    const userCookie = JSON.parse(localStorage.getItem('user')) || {};
+
+    // lista FINALĂ folosită în UI
+    const executorsList =
+        userCookie.role === "manager" ? subordinates : users;
+
     // Fetch users for dropdown
     useEffect(() => {
         async function fetchUsers() {
@@ -53,6 +61,25 @@ export default function AssignTaskPage() {
             setDescription(editTask.description || "");
         }
     }, [editTask]);
+
+    useEffect(() => {
+        if (userCookie.role !== "manager") return;
+
+        async function loadSubordinates() {
+            try {
+                const response = await fetch(
+                    `http://localhost:3001/api/users/getManagerExecutors?managerId=${userCookie.id}`
+                );
+                if (!response.ok) throw new Error("Failed to fetch subordinates");
+                const data = await response.json();
+                setSubordinates(data);
+            } catch (error) {
+                console.error("Error loading subordinates:", error);
+            }
+        }
+
+        loadSubordinates();
+    }, [userCookie.role, userCookie.id]);
 
     async function handleCreateTask() {
         const user = JSON.parse(localStorage.getItem('user'));
@@ -122,7 +149,7 @@ export default function AssignTaskPage() {
                         <TextField text="Task Title" value={taskTitle} onChange={(e) => setTaskTitle(e.target.value)}/>
                         <Dropdown text="Executor" value={asigneeId} onChange={handleExecutorChange}>
                             <option value="">Select executor...</option>
-                            {users.map(user => (
+                            {executorsList.map(user => (
                                 <option key={user.id} value={user.id}>
                                     {user.name} ({user.email})
                                 </option>
