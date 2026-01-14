@@ -10,6 +10,7 @@ const { sequelize, User } = require('./models'); // folosim User ca sa hardcodam
 const userRoutes = require('./routes/users');
 const taskRoutes = require('./routes/tasks');
 const subtaskRoutes = require('./routes/subtasks');
+const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -17,6 +18,11 @@ const PORT = process.env.PORT || 3001;
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, '../client/taskplanner/dist')));
+
+app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../client/taskplanner/dist', 'index.html'));
+});
 
 // Routes
 app.use('/api/users', userRoutes);
