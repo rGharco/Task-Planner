@@ -143,6 +143,7 @@ export default function HistoryPage() {
                                 taskTitle={task.title}
                                 executant={task.executor || 'Unknown'}
                                 type={mapStatusToType(task)}
+                                date={task.deadline}
                             />
                         </LabeledList>
                     ))}
