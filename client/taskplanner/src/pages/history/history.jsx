@@ -70,6 +70,11 @@ export default function HistoryPage() {
         return groups;
     }, {});
 
+    const subordinates = [
+        {id: 1, username: "John Doe"},
+        {id: 2, username: "Jane Smith"}
+    ];
+
     return (
         <>
             <PageTitle text="History"/>
@@ -104,7 +109,7 @@ export default function HistoryPage() {
                 </ScrollBox>
             </InterfaceBackground>
             {showModal &&
-            <ModalPopup onClose={handleCancel} onApply={handleApply}>
+            <ModalPopup onClose={handleCancel} onApply={handleApply} width="400px" height="460px">
                 <Label text="Choose filters:"/>
                 <DateField text="Date:" value={draftFilters.date} onChange={(e) => setDraftFilters({...draftFilters, date: e.target.value})}/>
                 <Dropdown text="Select Type:" value={draftFilters.type} onChange={(e) => setDraftFilters({...draftFilters, type: e.target.value})}>
@@ -114,7 +119,14 @@ export default function HistoryPage() {
                     <option value="received_task">Received Task</option>
                     <option value="completed_task">Completed Task</option>
                 </Dropdown>
-                <TextField text="Executant:" value={draftFilters.executant} onChange={(e) => setDraftFilters({...draftFilters, executant: e.target.value})}/>
+                <Dropdown text="Select Executant:" value={draftFilters.executant} onChange={(e) => setDraftFilters({...draftFilters, executant: e.target.value})}>
+                    <option value="">Any Subordinate</option>
+                    {
+                        subordinates.map(subordinate => (
+                            <option value={subordinate.username}>{subordinate.username}</option>
+                        ))
+                    }
+                </Dropdown>
             </ModalPopup>}
         </>
     )

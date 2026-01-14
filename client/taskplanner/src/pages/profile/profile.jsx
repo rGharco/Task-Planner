@@ -28,7 +28,7 @@ export default function ProfilePage() {
                     Logout
                 </button>
             </div>
-            <InterfaceBackground>
+            <InterfaceBackground height="100vh">
                 <div className={styles.horizontal_container}>
                     <div className={styles.left_container}>
                         <Label text="User Information"/>
@@ -37,6 +37,7 @@ export default function ProfilePage() {
                                 <InfoLine heading="User:" info={userData.name || "User's Name"}/>
                                 <InfoLine heading="User ID:" info={userData.id || "User's ID"}/>
                                 <InfoLine heading="Email:" info={userData.email || "User's Email"}/>
+                                <InfoLine heading="Role:" info={userData.role || "User's Role"}/>
                                 <InfoLine heading="Birth Date:" info={userData.birthDate || "Not provided"}/>
                             </div>
                         </div>

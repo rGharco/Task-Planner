@@ -97,7 +97,7 @@ export default function SettingsPage() {
                 </div>
             </InterfaceBackground>
             {showModal && 
-            <ModalPopup onClose={handleCancel} onApply={handleApply} width="25%" height="35%">
+            <ModalPopup onClose={handleCancel} onApply={handleApply} width="400px" height="300px">
                 <Dropdown text="Change Role:" value={selectedUser.role} onChange={(e) => handleModalChange('role', e.target.value)}>
                     <option value="executant">Executant</option>
                     <option value="manager">Manager</option>
