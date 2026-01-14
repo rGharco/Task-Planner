@@ -136,7 +136,7 @@ return (
                 Logout
             </button>
         </div>
-        <InterfaceBackground height="75vh">
+        <InterfaceBackground>
             <div className={styles.horizontal_container}>
                 <div className={styles.left_container}>
                     <Label text="User Information"/>
