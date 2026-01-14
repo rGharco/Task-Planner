@@ -6,7 +6,7 @@ export default function HomePage() {
     return (
         <>
             <PageTitle text="Home"/>
-            <InterfaceBackground>
+            <InterfaceBackground height="75vh">
                 Welcome, UserName!
             </InterfaceBackground>
         </>

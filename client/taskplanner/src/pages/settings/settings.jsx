@@ -62,7 +62,7 @@ export default function SettingsPage() {
     return (
         <>
             <PageTitle text="Settings"/>
-            <InterfaceBackground>
+            <InterfaceBackground height="75vh">
                 <div className={styles.horizontal_container}>
                     <div className={styles.left_container}>
                         <div className={styles.inputFields}>
