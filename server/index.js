@@ -15,7 +15,13 @@ const app = express();
 const PORT = process.env.PORT || 10000;
 
 // Middleware
-app.use(cors());
+const allowedOrigin = process.env.FRONTEND_URL || "http://localhost:3001";
+
+// 2. Apply CORS globally before your routes
+app.use(cors({
+  origin: allowedOrigin,
+  credentials: true
+}));
 app.use(express.json());
 
 // Routes
