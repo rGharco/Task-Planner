@@ -56,7 +56,7 @@ export default function SettingsPage() {
     const handleModalChange = (field, value) => {
         setSelectedUser(prev => ({
             ...prev,
-            [field]: value
+            [field]: field === 'managerId' ? (value ? Number(value) : null) : value
         }));
     };
 
@@ -77,8 +77,10 @@ export default function SettingsPage() {
             });
 
             if (response.ok) {
+                const updatedUser = await response.json();
+
                 setUserList(prevUsers =>
-                    prevUsers.map(u => u.id === selectedUser.id ? selectedUser : u)
+                    prevUsers.map(u => u.id === updatedUser.id ? updatedUser : u)
                 );
                 alert('User updated successfully!');
             } else {

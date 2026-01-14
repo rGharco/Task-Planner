@@ -224,7 +224,7 @@ router.put('/:id/role', async (req, res) => {
         // 1. Actualizam userul curent
         await user.update({
             role: role ?? user.role,
-            managerId: role === 'executor' ? managerId ?? null : null
+            managerId: managerId ?? null
         });
 
         // 2. Daca era manager și devine executor → curatam subordonaaii
