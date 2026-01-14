@@ -65,10 +65,30 @@ export default function SettingsPage() {
         setShowModal(true);
     };
 
-    const handleApply = () => {
-        setUserList(prevUsers =>
-            prevUsers.map(u => u.id === selectedUser.id ? selectedUser : u)
-        );
+    const handleApply = async () => {
+        try {
+            const response = await fetch(`http://localhost:3001/api/users/${selectedUser.id}/role`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    role: selectedUser.role,
+                    managerId: selectedUser.managerId || null
+                })
+            });
+
+            if (response.ok) {
+                setUserList(prevUsers =>
+                    prevUsers.map(u => u.id === selectedUser.id ? selectedUser : u)
+                );
+                alert('User updated successfully!');
+            } else {
+                alert('Failed to update user');
+            }
+        } catch (error) {
+            console.error('Error updating user:', error);
+            alert('Error updating user');
+        }
+    
         setShowModal(false);
         setSelectedUser(null);
     };

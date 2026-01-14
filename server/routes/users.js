@@ -192,4 +192,36 @@ router.put('/:id', async (req, res) => {
     }
 });
 
+/**
+ * PUT /api/users/:id/role
+ * Update user role and manager (admin only)
+ */
+router.put('/:id/role', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { role, managerId } = req.body;
+
+        const user = await User.findByPk(id);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        await user.update({
+            role: role || user.role,
+            managerId: managerId || null
+        });
+
+        res.status(200).json({
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            managerId: user.managerId
+        });
+    } catch (error) {
+        console.error('Error updating user role:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 module.exports = router;
