@@ -15,6 +15,7 @@ import TextField from '../../components/text_field/text_field';
 export default function HistoryPage() {
     const [showModal, setShowModal] = useState(false);
     const [historyData, setHistoryData] = useState([]); // stocam aici taskuri din baza de date luate prin API
+    const [subordinates, setSubordinates] = useState([]); 
 
     // Cand utilizatorul deschide meniul de filtre si le introduce, pana nu da click pe apply nu se modifica in activeFilters
     const [draftFilters, setDraftFilters] = useState({
@@ -56,10 +57,16 @@ export default function HistoryPage() {
     useEffect(() => {
         async function loadHistory() {
             try {
-                const endDate = new Date(); // luam toate taskurile pana astazi de adaugat la request de implementat pentru filtre
+                let targetUserId = userCookie.id;
 
-                // folosim userId pentru a lua taskurile per user
-                const response = await fetch(`http://localhost:3001/api/tasks/userHistory?userId=${userCookie.id}`); 
+                if (activeFilters.executant) {
+                    const selectedSub = subordinates.find(s => s.name === activeFilters.executant);
+                    if (selectedSub) {
+                        targetUserId = selectedSub.id; 
+                    }
+                }
+
+                const response = await fetch(`http://localhost:3001/api/tasks/userHistory?userId=${targetUserId}`); 
                 if (!response.ok) throw new Error(`Server error: ${response.status}`);
                 const tasks = await response.json();
                 
@@ -72,12 +79,26 @@ export default function HistoryPage() {
 
         loadHistory();
 
-    }, []);
+    }, [activeFilters.executant, userCookie.id]);
+
+    // In maparea datelor, determinam cine este ownerul vizualizarii curente
+    const getCurrentViewedId = () => {
+        if (activeFilters.executant) {
+            const selectedSub = subordinates.find(s => s.name === activeFilters.executant);
+            return selectedSub ? selectedSub.id : userCookie.id;
+        }
+        return userCookie.id;
+    };
 
     // Pentru ca maparea e complexa in functie fie de cine a facut taskul fie de statusul lui folosim functia asta pentru compatbilitiate
     const mapStatusToType = (task) => {
+        const viewedUserId = getCurrentViewedId();
+
         if (task.status === "CLOSED") return "completed_task";
-        if (userCookie.id === task.creatorId) return "created_task";
+        
+        if (viewedUserId === task.creatorId) return "created_task";
+        
+        // Dacă cel la care ne uităm este cel care a primit task-ul (executorul)
         return "received_task";
     };
 
@@ -88,10 +109,23 @@ export default function HistoryPage() {
         return matchesType && matchesExec && matchesDate;
     });
 
-    const subordinates = [
-        {id: 1, username: "John Doe"},
-        {id: 2, username: "Jane Smith"}
-    ];
+    useEffect(() => {
+        if (userCookie.role === "manager") {
+            async function loadSubordinates() {
+                try {
+                    const response = await fetch(`http://localhost:3001/api/users/getManagerExecutors?managerId=${userCookie.id}`); 
+                    if (!response.ok) throw new Error("Failed to fetch subordinates");
+                    const data = await response.json();
+                    console.log(data);
+
+                    setSubordinates(data);
+                } catch (error) {
+                    console.error("Error loading subordinates:", error);
+                }
+            }
+            loadSubordinates();
+        }
+    }, [userCookie.role, userCookie.id]);
 
     return (
         <>
@@ -129,7 +163,7 @@ export default function HistoryPage() {
                     <option value="">Any Subordinate</option>
                     {
                         subordinates.map(subordinate => (
-                            <option value={subordinate.username}>{subordinate.username}</option>
+                            <option value={subordinate.name}>{subordinate.name}</option>
                         ))
                     }
                 </Dropdown>}

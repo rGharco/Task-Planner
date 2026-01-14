@@ -46,7 +46,7 @@ router.get('/', async (req, res) => {
  */
 router.get('/userHistory', async (req, res) => {
     try {
-        const { userId, startDate, endDate } = req.query;
+        const { userId } = req.query;
 
         if (!userId) {
             return res.status(400).json({ error: 'userId query parameter is required' });
@@ -67,18 +67,7 @@ router.get('/userHistory', async (req, res) => {
             ]
         };
 
-        // 3. Filtrare dupa date, daca exista
-        if (startDate && endDate) {
-            whereClause[Op.and] = [
-                {
-                    deadline: {
-                        [Op.between]: [new Date(startDate), new Date(endDate)]
-                    }
-                }
-            ];
-        }
-
-        // 4. Query final
+        // 3. Query final
         const tasks = await Task.findAll({
             where: whereClause,
             order: [['deadline', 'DESC']],
