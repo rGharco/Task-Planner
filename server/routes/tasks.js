@@ -39,49 +39,6 @@ router.get('/', async (req, res) => {
     }
 });
 
-/**
- * POST /api/tasks
- * Create a new task
- * Body: { title, description, deadline, category }
- */
-router.post('/', async (req, res) => {
-    try {
-        const { title, executor, deadline, description, category } = req.body;
-        let task;
-
-        // Validate required fields
-        if (title.trim().length === 0) {
-            return res.status(400).json({ 
-                error: 'Missing required fields: title' 
-            }); 
-            }
-
-        if (!executor) {
-            task = await Task.create({
-                title,
-                description: description || null,
-                status: 'OPEN',
-                deadline: deadline || null,
-                category: category || null,
-            });
-        }
-        else {
-            task = await Task.create({
-                title,
-                description: description || null,
-                status: 'PENDING',
-                deadline: deadline || null,
-                category: category || null,
-            });
-        }
-        
-
-        res.status(201).json(task);
-    } catch (error) {
-        console.error('Error creating task:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
 
 /**
  * POST /api/tasks/:id/assign
