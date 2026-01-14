@@ -1,16 +1,35 @@
 /**
  * Database Configuration and Model Initialization
- * Sets up Sequelize with SQLite and defines all model relationships
+ * Automatically switches between SQLite (Local) and Postgres (Render)
  */
 const { Sequelize } = require('sequelize');
 const path = require('path');
 
-// Initialize Sequelize with SQLite
-const sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: path.join(__dirname, '..', 'database.sqlite'),
-    logging: false
-});
+let sequelize;
+
+// CHECK: Is there a database URL provided? (Render provides this automatically)
+if (process.env.DATABASE_URL) {
+    // PRODUCTION MODE (Render)
+    sequelize = new Sequelize(process.env.DATABASE_URL, {
+        dialect: 'postgres',
+        protocol: 'postgres',
+        logging: false,
+        dialectOptions: {
+            ssl: {
+                require: true,
+                rejectUnauthorized: false // Necessary for Render's free tier
+            }
+        }
+    });
+} else {
+    // DEVELOPMENT MODE (Local Laptop)
+    // Keeps working exactly how it did before!
+    sequelize = new Sequelize({
+        dialect: 'sqlite',
+        storage: path.join(__dirname, '..', 'database.sqlite'),
+        logging: false
+    });
+}
 
 // Import models
 const User = require('./User')(sequelize);
