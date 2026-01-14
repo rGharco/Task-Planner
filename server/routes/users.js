@@ -13,7 +13,8 @@ const { User } = require('../models');
 router.get('/', async (req, res) => {
     try {
         const users = await User.findAll({
-            attributes: ['id', 'name', 'email', 'role', 'managerId']        });
+            attributes: ['id', 'name', 'email', 'role', 'managerId']
+        });
         res.status(200).json(users);
     } catch (error) {
         console.error('Error fetching users:', error);
