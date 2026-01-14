@@ -115,7 +115,7 @@ export default function AssignTaskPage() {
     return (
         <>
             <PageTitle text={isEditMode ? "Edit Task" : "Assign Task"}/>
-            <InterfaceBackground>
+            <InterfaceBackground height="75vh">
                 <div className={styles.page_container}>
                     <div className={styles.left_container}>
                         <TextField text="Task Title" value={taskTitle} onChange={(e) => setTaskTitle(e.target.value)}/>

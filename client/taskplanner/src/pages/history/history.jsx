@@ -97,7 +97,7 @@ export default function HistoryPage() {
     return (
         <>
             <PageTitle text="History"/>
-            <InterfaceBackground>
+            <InterfaceBackground height="75vh">
                 <div className={styles.button}>
                     <LargeButton text="Filter History" onClick={() => setShowModal(true)}/>
                     <LargeButton text="Clear Filters" onClick={handleReset}/>
