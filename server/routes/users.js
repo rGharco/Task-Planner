@@ -7,6 +7,51 @@ const router = express.Router();
 const { User } = require('../models');
 
 /**
+ * GET /api/users
+ * Get all users
+ */
+router.get('/', async (req, res) => {
+    try {
+        const users = await User.findAll({
+            attributes: ['id', 'name', 'email', 'role']
+        });
+        res.status(200).json(users);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+/**
+ * GET /api/users/getManagerExecutors?managerId
+ * Get all executors (or subordinates) that belong to a manage
+ * This is used in history for a manager to check on his subordinates
+ * call example: http://localhost:3001/api/users/getManagerExecutors?managerId=3
+ */
+router.get('/getManagerExecutors', async (req, res) => {
+    try {
+        const { managerId } = req.query;
+
+        // Validare: ne asigurăm că managerId a fost trimis
+        if (!managerId) {
+            return res.status(400).json({ error: 'Parametrul managerId este obligatoriu.' });
+        }
+
+        const users = await User.findAll({
+            attributes: ['id', 'name', 'email', 'role'],
+            where: {
+                managerId: managerId 
+            }
+        });
+
+        res.status(200).json(users);
+    } catch (error) {
+        console.error('Error fetching executors:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+/**
  * POST /api/users
  * Create a new user (Register)
  * Body: { email, name, password, birthDate, role, managerId (optional) }
@@ -119,38 +164,6 @@ router.post('/:id/assign-manager', async (req, res) => {
         res.status(200).json(user);
     } catch (error) {
         console.error('Error assigning manager:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-
-/**
- * GET /api/users
- * Get all users
- */
-router.get('/', async (req, res) => {
-    try {
-        const users = await User.findAll({
-            attributes: ['id', 'name', 'email', 'role']
-        });
-        res.status(200).json(users);
-    } catch (error) {
-        console.error('Error fetching users:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-
-/**
- * GET /api/users
- * Get all users
- */
-router.get('/', async (req, res) => {
-    try {
-        const users = await User.findAll({
-            attributes: ['id', 'name', 'email', 'role']
-        });
-        res.status(200).json(users);
-    } catch (error) {
-        console.error('Error fetching users:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
